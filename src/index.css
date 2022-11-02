@@ -1,13 +1,846 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ====== Fonts ====== */
+@font-face {
+    font-family: "ossl";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Light.ttf");
+}
+@font-face {
+    font-family: "ossr";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Regular.ttf");
+}
+@font-face {
+    font-family: "ossm";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Medium.ttf");
+}
+@import url("https://fonts.googleapis.com/css2?family=Domine:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
+/* font-family: 'Domine', serif;
+font-family: 'Merriweather', serif;
+font-family: 'Rubik', sans-serif; */
+
+/* ====== Global, Page ====== */
+
+:root {
+    --body-font-family: "ossl", sans-serif;
+    --header-font-family: "domine";
+    --title-font-family: "merriweather";
+    --light-background-color: #f7f5f7;
+    /* --light-background-color: #f7f6f9; */
+    /* ^ other option: f7f6f9 */
+    --dark-background-color: #423f49;
+    /* ^ Other options = 494549, 2a2e2c, 4d4c4d, 5e5b64 */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-background-color);
+    padding: 0;
+    margin: 0;
+}
+
+.page-container {
+    width: 100%;
+    height: 100%;
+}
+
+button {
+    padding: 0;
+    margin: 0;
+}
+
+.hide-visually {
+    position: absolute;
+    left: -999em;
+}
+a {
+    color: inherit;
+}
+
+/* ====== Rainbow Bar ====== */
+
+.rainbow-bar {
+    height: clamp(0.75rem, calc(0.67rem + 0.41vw), 0.94rem);
+    /* ^ 15@1050, 12@320 */
+}
+
+/* ====== Header ====== */
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header_title {
+    font-size: clamp(1.81rem, calc(1.35rem + 2.29vw), 3rem);
+    /* ^ 48px@1050, 29@320 */
+    font-family: "merriweather";
+    font-weight: 400;
+    color: #282828;
+    margin-top: clamp(0.81rem, calc(0.55rem + 1.33vw), 1.5rem);
+    /* ^ 24@1050, 13@320 */
+    margin-bottom: 0;
+}
+
+.header_subtitle {
+    font-family: "Rubik";
+    font-weight: 300;
+    font-size: clamp(1.13rem, calc(0.93rem + 1vw), 1.44rem);
+    /* ^ 23@820, 18@320 */
+    font-size: clamp(1.13rem, calc(0.93rem + 1vw), 1.44rem);
+    margin-top: clamp(0.25rem, calc(0.09rem + 0.82vw), 0.63rem);
+    /* ^ 10p@1050, 4@320 */
+    margin-bottom: clamp(0.88rem, calc(0.41rem + 2.33vw), 1.94rem);
+    /* ^ 31@1050, 14@320 */
+}
+
+/* ====== Global Chart ====== */
+
+.global-chart_container {
+    width: 100%;
+    background-color: var(--dark-background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.global-chart_inset {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-top: 9px solid;
+    border-bottom: 16px solid;
+    border-color: var(--light-background-color);
+    background-color: transparent;
+}
+
+.global-chart_image {
+    border-radius: 6px 6px 0 0;
+    z-index: 2;
+    /* width: min(900px, calc(100% + 2px)); */
+    width: min(900px, 100%);
+}
+
+.global-chart_image--modal {
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: 0;
+    object-fit: contain;
+}
+.testDiv {
+    height: 100%;
+    width: 100%;
+}
+
+/* ------ Global Chart Controls ------ */
+
+.global-chart_controls-container {
+    z-index: 2;
+    position: relative;
+    width: min(900px, 100%);
+    box-sizing: border-box;
+    background-color: var(--dark-background-color);
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    border-radius: 0 0 6px 6px;
+    padding: 2px 10px 3px;
+    /* experimental */
+    background-color: #333;
+    font-family: "ossr", sans-serif;
+}
+
+.global-chart_time-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 18px;
+    width: min(100%, 13rem);
+}
+.global-chart_time-controls > h4 {
+    color: #eaeaea;
+    font-family: "ossr";
+    font-weight: 300;
+}
+
+.global-chart_time-controls > button {
+    font-size: 20px;
+    display: flex;
+}
+.global-chart_time-controls > button:first-of-type:hover {
+    transform: scale(1.1) translateX(-1px);
+}
+.global-chart_time-controls > button:last-of-type:hover {
+    transform: scale(1.1) translateX(1px);
+}
+
+.global-chart_fullscreen-button {
+    position: absolute;
+    right: 3px;
+    top: 1px;
+    font-size: 22px;
+    color: #fff;
+}
+.global-chart_fullscreen-button:hover {
+    font-size: 24px;
+    top: 0;
+    right: 2px;
+}
+
+/* .text-radio-label {
+    transition: font-size 0.1s linear, opacity 0.1s linear;
+} */
+
+/* ------------ */
+
+/* ====== Search ====== */
+
+/* clears the ‘X’ from Internet Explorer */
+input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
+input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
+
+.search-form {
+    position: relative;
+}
+
+.search-input {
+    display: flex;
+    width: 100%;
+    font-size: 22px;
+    font-family: var(--body-font-family);
+    border-radius: 0.6rem;
+    padding: 0.15rem 0.6rem 0.25rem;
+    margin: 0.5rem auto;
+    border: 1px solid #555;
+}
+.search-input:focus {
+    /* outline-color: #c90054; */
+    outline: 2px solid #e41c6f;
+}
+
+.position-in-searchbar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 0.3rem;
+    height: 100%;
+}
+
+.search-loader {
+    right: 0.5rem;
+}
+
+.clear-search {
+    color: #222;
+    font-size: 1.5rem;
+}
+.clear-search:hover {
+    font-size: 1.7rem;
+    right: 0.2rem;
+}
+
+/* |||||| FORECASTS |||||| */
+
+.chartViewport {
+    /* gives the chart it's own stacking context */
+    border: 1px solid red;
+    z-index: 1;
+}
+
+.forecast-container {
+    display: flex;
+    flex-direction: column;
+}
+/* ------ Header ------ */
+.forecast-location {
+    margin: 0;
+}
+.forecast-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+.forecast-header-buttons {
+    display: flex;
+    align-items: center;
+    padding: 0 0 2px;
+    height: 23px;
+}
+a {
+    display: flex;
+}
+.forecast-header-buttons > * {
+    display: flex;
+    align-items: flex-end;
+    font-size: 20px;
+    /* border: solid 1px green; */
+}
+.pin-icon--hovered {
+    color: rgb(80, 81, 109);
+    display: none;
+}
+.pin-button:hover .pin-icon--hovered {
+    display: inline;
+}
+.pin-button:hover .pin-icon {
+    display: none;
+}
+.map-button {
+    margin: 0 6px 0 4px;
+}
+.map-button:hover .map-icon {
+    display: none;
+}
+.map-icon--hovered {
+    display: none;
+    color: rgb(80, 81, 109);
+}
+.map-button:hover .map-icon--hovered {
+    display: inline;
+}
+.time-view-button {
+    width: 60px;
+    height: 21px;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 1px solid #222;
+}
+.time-view-button:hover {
+    /* outline: 1px solid #999; */
+    color: white;
+    background-color: rgb(103, 105, 140);
+    /* border-color: #e41c6f; */
+}
+
+/* ====== Chart ====== */
+
+.forecast-chart-container {
+    position: relative;
+    width: 100%;
+    border: 1px solid #333;
+    border-radius: 6px;
+    display: flex;
+}
+
+/* ------ LeftPad area of Chart ------ */
+
+.forecast-left-pad-content-container {
+    flex-shrink: 0;
+    position: relative;
+}
+.chart-header {
+    font-size: 16px;
+    font-family: "ossr";
+    font-weight: 300;
+    color: #222;
+}
+.temp-units {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    font-family: "ossl";
+    font-weight: 300;
+    font-size: 18px;
+}
+.days-header {
+    width: 100%;
+    padding: 1px 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    border-bottom: 1px solid #222;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.chart-header-space-fix {
+    display: inline-block;
+    width: 0.06em;
+}
+.temp-axis {
+    /* Fixes improper placement of axis line */
+    transform: translate(0px, -0.5px);
+}
+.temp-label {
+    font-family: "ossl";
+    font-size: 14px;
+    text-anchor: end;
+    fill: #222;
+    transform: translate(-2px, 5px);
+}
+.bottom-left-container {
+    border-top: solid 1px #222;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.times-header {
+    margin-top: 0.4em;
+}
+
+/* ------ Chart area ------ */
+.experimental-time-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 12;
+}
+.os-content {
+    /* So that position:sticky for horizontal gridlines works */
+    width: auto !important;
+}
+.y-axis-and-labels {
+    fill: "transparent";
+    flex-shrink: 0;
+}
+
+.forecast-scrollable-container {
+    position: relative;
+    /* width: 550px; */
+    height: 100%;
+    /* For Native Scrollbars (when not using Overlay Scrollbars Component) */
+    /* overflow-x: scroll;
+    overflow-y: hidden; */
+}
+.forecast-scrollable-expandable-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.forecast-data-background {
+    z-index: 10;
+}
+.forecast-temp-grid {
+    z-index: 11;
+    position: sticky;
+    left: 0;
+    top: 0;
+}
+.forecast-data-line {
+    z-index: 13;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+.forecast-days {
+    display: flex;
+    z-index: 12;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.forecast-day-filter {
+    box-sizing: border-box;
+}
+.day-label {
+    margin: 0;
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 0.15s linear;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-end;
+    font-weight: 300;
+    font-size: 16px;
+}
+.forecast-hourly-x-axis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 12;
+}
+.forecast-daily-x-axis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 12;
+}
+
+.time-label {
+    text-anchor: middle;
+    transform: translateY(7px);
+}
+.only-visible-in-viewport {
+    transition: opacity 0.1s linear;
+}
+
+.intersection-observer {
+    border: 1px solid red;
+    height: 500px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* ......Hover Effect...... */
+.forecast-days:hover .forecast-day:not(:hover) .forecast-day-filter.daily {
+    /* ^ container hovered, days not hovered, only when daily */
+    backdrop-filter: brightness(0.94);
+}
+.forecast-days:hover .forecast-day:hover .forecast-day-filter.daily {
+    /* ^ container hovered, day hovered, only when daily */
+    backdrop-filter: brightness(1.02);
+}
+
+/* ------ Scrollbar ------ */
+
+.forecast-chart-container .os-scrollbar {
+    height: 10px;
+}
+
+.forecast-chart-container .os-scrollbar-track {
+    /* needs !important to override the high specificity of the defaults  */
+    background-color: #ccc !important;
+    height: 3px;
+}
+.forecast-chart-container .os-scrollbar-handle {
+    height: 7px;
+    /* needs !important to override the high specificity of the defaults  */
+    background-color: #bfbfbf !important;
+    box-sizing: border-box;
+    border: 1px solid #aaa;
+    position: relative;
+    bottom: 2px;
+}
+
+/* ......Hover and Active Effects...... */
+/* When hovered */
+.forecast-chart-container .os-scrollbar:hover .os-scrollbar-handle {
+    height: 9px;
+    bottom: 3px;
+    border: 2px solid #888;
+}
+/* When active */
+.forecast-chart-container .os-scrollbar-handle.active {
+    height: 9px;
+    bottom: 3px;
+    border: 2px solid #888;
+}
+/* Can't select track when handle is active */
+
+/* |||||| MODAL |||||| */
+
+.modal-background {
+    z-index: 100;
+    position: fixed;
+    margin: 0px;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    /* background-color: #000000099; */
+    /* backdrop-filter: blur(20px) brightness(0.5); */
+}
+
+.close-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    font-size: 30px;
+    color: #f8f8f8;
+    /* background-color: #333; */
+}
+.close-modal > svg {
+    /* background-color: #333; */
+    border-radius: 15px;
+}
+
+/* ====== Footer ====== */
+
+footer {
+    background-color: #222;
+    align-self: stretch;
+    align-items: bottom;
+    display: flex;
+    justify-content: right;
+    padding: 0.2rem 1rem 0.4rem;
+}
+
+.show-coverage-map:hover {
+    transform: scale(1.03);
+    text-decoration: underline;
+}
+
+.coverage-map {
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: 0;
+    object-fit: contain;
+}
+
+@media screen and (min-width: 1200px) {
+    .coverage-map {
+        margin: 0 20px;
+    }
+    .global-chart_image--modal {
+        margin: 0 20px;
+    }
+}
+
+/* ====== Accessability ====== */
+@media screen and (prefers-reduced-motion: reduce) {
+    * {
+        /* Very short durations means JavaScript that relies on events still works */
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/* ====== OLD ====== */
+button {
+    background-color: #00000000;
+    /* color: #fff; */
+    border: none;
+}
+/* backdrop */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000e1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.recents {
+    padding-left: 0.5em;
+}
+.recents > .bold {
+    font-family: "ossr";
+}
+.recents > a {
+    color: black;
+    text-decoration: none;
+}
+.recents > a:hover {
+    text-decoration: underline;
+}
+
+article h2 {
+    font-weight: 500;
+    color: #282828;
+}
+
+article {
+    padding: 0 0 0 1.5rem; /* for visual centering */
+    max-width: 30rem;
+    display: flex;
+    flex-flow: column;
+}
+.bold {
+    font-family: "ossm";
+    /* font-weight: 600; */
+}
+h2 {
+    margin-top: 3.5rem;
+    margin-bottom: 0.1em;
+    /* padding-bottom: 0.2rem; */
+    font-family: var(--header-font-family);
+    font-size: 30px;
+}
+article p {
+    font-family: var(--body-font-family);
+    font-size: 18px;
+    letter-spacing: -0.003rem; /* looks better to my eye */
+    line-height: 1.8rem;
+    margin: 0.8em 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    /* display: flex; */
+    /* background-color: rgb(245, 243, 244); */
+    /* background: rgb(255, 241, 229); */
+    /* background: linear-gradient(
+        180deg,
+        rgba(255, 241, 229, 1) 0%,
+        rgba(250, 177, 190, 1) 100%
+    ); */
+    height: 58rem;
+    font-family: var(--body-font-family);
+    background-color: var(--light-background-color);
+
+    /* background: linear-gradient(
+        0deg,
+        rgb(238, 242, 249) 0%,
+        rgba(247, 245, 247, 1) 75vh
+    ); */
+}
+
+h4 {
+    margin: 0;
+}
+
+article {
+    /* background: rgb(239, 243, 250);
+    border-radius: 20px;
+    border: 3px solid #555;
+     */
+    /* background: linear-gradient(
+        0deg,
+        rgb(238, 242, 249) 0%,
+        rgba(247, 245, 247, 1) 75vh
+    ); */
+    /* border: 2px solid #888;
+    border-radius: 30px;
+    padding: 0 3em; */
+    margin-bottom: 3em;
+}
+/* header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+} */
+
+/* header > h4 {
+    width: 100%;
+    text-align: center;
+} */
+
+.plain-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 0;
+    margin: 0 0.1em;
+    text-decoration: none;
+    background: none;
+    color: #222;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.plain-button:hover {
+    color: #bb054b;
+    border-radius: 1rem;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.search-container {
+    /* display: inline-flex;
+    flex-flow: column;
+    align-items: flex-start; */
+    width: min(90%, 34rem);
+    margin: 2em 0em 5em;
+}
+
+.error {
+    text-align: center;
+}
+
+.sub-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 0 0.2rem;
+    margin: 0 0.1em;
+    text-decoration: none;
+    background: none;
+    color: #222;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-family: var(--body-font-family);
+}
+
+#spacingFix {
+    /* necessary because when only using align-items doesn't appear visually centered along same horizontal axis as icon */
+    padding: 0 0 0.1rem 0.4rem;
+}
+.icon {
+    /* padding: 0 0.3rem 0 0; */
+    font-size: 20px;
+    /* animation-name: rotate; */
+    animation-duration: 0.5s;
+    animation-iteration-count: 2;
+    /* retain position once animation stops */
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+    animation-timing-function: linear;
+}
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.sub-button:hover {
+    color: #c90054;
+    border-radius: 1rem;
+}
+
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid;
+    border-color: #000 transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotate 2s linear infinite;
+}
+
+.recents > * {
+    font-size: 18px;
 }

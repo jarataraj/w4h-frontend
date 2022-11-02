@@ -1,0 +1,299 @@
+/* ====== Fonts ====== */
+@font-face {
+    font-family: "ossl";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Light.ttf");
+}
+@font-face {
+    font-family: "ossr";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Regular.ttf");
+}
+@font-face {
+    font-family: "ossm";
+    src: url("assets/fonts/Open-Sauce-Sans/Open-Sauce-Sans/TTF/OpenSauceSans-Medium.ttf");
+}
+@import url("https://fonts.googleapis.com/css2?family=Domine:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
+/* font-family: 'Domine', serif;
+font-family: 'Merriweather', serif;
+font-family: 'Rubik', sans-serif; */
+
+:root {
+    --body-font-family: "ossl", sans-serif;
+    --header-font-family: "domine";
+    --background-color: #f7f5f7;
+}
+
+/* backdrop */
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000e1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    max-width: 900px;
+}
+.recents {
+    padding-left: 0.5em;
+}
+.recents > .bold {
+    font-family: "ossr";
+}
+.recents > a {
+    color: black;
+    text-decoration: none;
+}
+.recents > a:hover {
+    text-decoration: underline;
+}
+
+.test {
+    top: 0px;
+    position: absolute;
+    height: 130px;
+    width: 100%;
+    z-index: -1;
+}
+
+header {
+    /* background-color: rgb(231, 239, 255); */
+    /* border-radius: 30px; */
+    align-self: stretch;
+    padding: 0.5em 0 1em;
+    /* border-bottom: 2px solid #333; */
+}
+
+header h1 {
+    font-size: 48px;
+    font-family: "merriweather";
+    color: #282828;
+    /* color: #eee; */
+    margin-bottom: -1px;
+    /* margin-top: 1em; */
+}
+article h2 {
+    font-weight: 500;
+    color: #282828;
+}
+header h4 {
+    font-family: "rubik";
+    font-size: 23px;
+    font-weight: 300;
+    margin-bottom: 15px;
+    /* color: white; */
+}
+
+article {
+    padding: 0 0 0 1.5rem; /* for visual centering */
+    max-width: 30rem;
+    display: flex;
+    flex-flow: column;
+}
+.bold {
+    font-family: "ossm";
+    /* font-weight: 600; */
+}
+h2 {
+    margin-top: 3.5rem;
+    margin-bottom: 0.1em;
+    /* padding-bottom: 0.2rem; */
+    font-family: var(--header-font-family);
+    font-size: 30px;
+}
+article p {
+    font-family: var(--body-font-family);
+    font-size: 18px;
+    letter-spacing: -0.003rem; /* looks better to my eye */
+    line-height: 1.8rem;
+    margin: 0.8em 0;
+}
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    /* display: flex; */
+    /* background-color: rgb(245, 243, 244); */
+    /* background: rgb(255, 241, 229); */
+    /* background: linear-gradient(
+        180deg,
+        rgba(255, 241, 229, 1) 0%,
+        rgba(250, 177, 190, 1) 100%
+    ); */
+    height: 58rem;
+    font-family: var(--body-font-family);
+    background-color: var(--background-color);
+
+    /* background: linear-gradient(
+        0deg,
+        rgb(238, 242, 249) 0%,
+        rgba(247, 245, 247, 1) 75vh
+    ); */
+}
+
+article {
+    /* background: rgb(239, 243, 250);
+    border-radius: 20px;
+    border: 3px solid #555;
+     */
+    /* background: linear-gradient(
+        0deg,
+        rgb(238, 242, 249) 0%,
+        rgba(247, 245, 247, 1) 75vh
+    ); */
+    /* border: 2px solid #888;
+    border-radius: 30px;
+    padding: 0 3em; */
+    margin-bottom: 3em;
+}
+header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+h1 {
+    font-family: var(--header-font-family);
+    font-weight: 400;
+    font-size: 50px;
+    margin: 1rem 0 0;
+    color: #333;
+}
+h4 {
+    font-family: var(--body-font-family);
+    font-family: "ossl";
+    /* font-style: italic; */
+    font-weight: 300;
+    font-size: 18px;
+    margin: 0.5rem 0 0;
+    /* text-transform: uppercase; */
+}
+
+header > h4 {
+    width: 100%;
+    text-align: center;
+}
+
+.plain-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 0;
+    margin: 0 0.1em;
+    text-decoration: none;
+    background: none;
+    color: #222;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.plain-button:hover {
+    color: #bb054b;
+    border-radius: 1rem;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.searchContainer {
+    /* display: inline-flex;
+    flex-flow: column;
+    align-items: flex-start; */
+    width: auto;
+    margin: 2em 0em 5em;
+}
+.search {
+    display: flex;
+    width: 34rem;
+    font-size: 22px;
+    font-family: var(--body-font-family);
+    border-radius: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    margin: 0.5rem auto;
+    border: 1px solid #555;
+}
+.search:focus {
+    /* outline-color: #c90054; */
+    outline: 2px solid #e41c6f;
+}
+
+.error {
+    text-align: center;
+}
+
+.sub-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 0 0.2rem;
+    margin: 0 0.1em;
+    text-decoration: none;
+    background: none;
+    color: #222;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-family: var(--body-font-family);
+}
+
+#spacingFix {
+    /* necessary because when only using align-items doesn't appear visually centered along same horizontal axis as icon */
+    padding: 0 0 0.1rem 0.4rem;
+}
+.icon {
+    /* padding: 0 0.3rem 0 0; */
+    font-size: 20px;
+    /* animation-name: rotate; */
+    animation-duration: 0.5s;
+    animation-iteration-count: 2;
+    /* retain position once animation stops */
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
+    animation-timing-function: linear;
+}
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.sub-button:hover {
+    color: #c90054;
+    border-radius: 1rem;
+}
+
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid;
+    border-color: #000 transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotate 2s linear infinite;
+    margin: 1px;
+}
+
+.recents > * {
+    font-size: 18px;
+}
