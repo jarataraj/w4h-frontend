@@ -12,10 +12,10 @@ import { range } from "d3-array";
 import { motion } from "framer-motion";
 
 import testData from "../utils/testData";
-import decode from "../utils/decodeTempTimes";
+import decode from "../utils/decodeForecastData";
 
 const Chart = ({ width, height }) => {
-    const [timeView, setTimeView] = useState("daily");
+    const [forecastTimescale, setforecastTimescale] = useState("daily");
 
     // ====== Charting ======
     // ------ Data ------
@@ -77,12 +77,16 @@ const Chart = ({ width, height }) => {
     return (
         <motion.div
             className="motionDiv"
-            animate={{ width: timeView === "daily" ? width : width * 4 }}
+            animate={{
+                width: forecastTimescale === "daily" ? width : width * 4,
+            }}
             transition={transition}
-            // width={timeView === "daily" ? width : width * 4}
+            // width={forecastTimescale === "daily" ? width : width * 4}
             height={height}
             onClick={() =>
-                setTimeView(timeView === "daily" ? "hourly" : "daily")
+                setforecastTimescale(
+                    forecastTimescale === "daily" ? "hourly" : "daily"
+                )
             }
             style={{ border: "1px solid red", justifySelf: "left" }}
         >
@@ -121,19 +125,19 @@ const Chart = ({ width, height }) => {
         /* <svg width={width} height={height}>
                 <motion.g
                     className={"group"}
-                    drag={timeView === "hourly" ? "x" : false}
+                    drag={forecastTimescale === "hourly" ? "x" : false}
                     dragConstraints={{ right: "10px" }}
                     dragElastic={{ right: 0 }}
                     style={{ originX: "30px" }}
                     initial={false}
-                    animate={timeView}
+                    animate={forecastTimescale}
                     variants={variants}
                     transition={transition}
                 >
                     <motion.g
                         onTap={() =>
-                            setTimeView(
-                                timeView === "hourly" ? "daily" : "hourly"
+                            setforecastTimescale(
+                                forecastTimescale === "hourly" ? "daily" : "hourly"
                             )
                         }
                     >

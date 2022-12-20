@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { BsCaretRight, BsCaretLeft } from "react-icons/bs";
+import {
+    BsCaretLeft,
+    BsCaretLeftFill,
+    BsCaretRight,
+    BsCaretRightFill,
+} from "react-icons/bs";
 import { IoExpand, IoClose, IoExpandSharp } from "react-icons/io5";
 
 import TextRadio from "./TextRadio";
@@ -12,39 +17,50 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
-import map from "../assets/images/MillerCropped.png";
+import map from "../assets/images/MillerCroppedNew.png";
 import useChart from "../services/charts";
+import useLocale from "hooks/useLocale";
 
 const GlobalChart = () => {
-    const [day, setDay] = useState(new Date(Date.now()));
+    const locale = useLocale();
+    // ====== Testing ======
+    const [day, setDay] = useState(
+        new Date(new Date(Date.now()).setMonth(10, 17))
+    );
+    const dateString = new Intl.DateTimeFormat(locale, {
+        weekday: "long",
+        month: "numeric",
+        day: "numeric",
+    }).format(day);
+
+    const changeDay = (deltaDays) => {
+        let newDay = new Date(day);
+        newDay.setDate(newDay.getDate() + deltaDays);
+        setDay(newDay);
+    };
+
+    // const [day, setDay] = useState(new Date(Date.now()));
     const [fullscreen, setFullscreen] = useState({ state: "closed" });
     const [thermalIndex, setThermalIndex] = useState("UTCI");
     const [highLow, setHighLow] = useState("Highs");
     const [units, setUnits] = useState("C");
 
-    const isFullscreen = fullscreen !== "closed";
+    // const isFullscreen = fullscreen.state !== "closed";
     const datestring = (offset = 0) => {
         let date = new Date(day.valueOf());
         date.setDate(date.getDate() + offset);
         return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     };
     const highLowString = highLow.toLowerCase();
-    const visibleChart = useChart(
-        datestring(),
-        highLowString,
-        isFullscreen,
-        true
-    );
+    const visibleChart = useChart(datestring(), highLowString, true);
     const nextChart = useChart(
         datestring(1),
         highLowString,
-        isFullscreen,
         visibleChart.isFetched
     );
     const previousChart = useChart(
         datestring(-1),
         highLowString,
-        isFullscreen,
         visibleChart.isFetched
     );
 
@@ -116,18 +132,29 @@ const GlobalChart = () => {
                     onDoubleClick={openFullscreen}
                     ref={globalImg}
                     className="global-chart_image"
-                    src={map}
+                    src={visibleChart.data}
                     alt="global temperatures"
                     style={{ opacity: fullscreen.state === "closed" ? 1 : 0 }}
                 />
                 <div className="global-chart_controls-container">
                     <div className="global-chart_time-controls">
-                        <button>
-                            <BsCaretLeft />
+                        <button
+                            className="change-day change-day--previous"
+                            disabled={previousChart.data ? false : true}
+                            onClick={() => changeDay(-1)}
+                        >
+                            <BsCaretLeft className="change-day_icon" />
+                            <BsCaretLeftFill className="change-day_icon--hover" />
                         </button>
-                        <h4>Today, August 1</h4>
-                        <button>
-                            <BsCaretRight />
+                        <h4>{dateString}</h4>
+                        {/* <h4>{`${day.getMonth()}, ${day.getDate()}`}</h4> */}
+                        <button
+                            className="change-day change-day--next"
+                            disabled={nextChart.data ? false : true}
+                            onClick={() => changeDay(1)}
+                        >
+                            <BsCaretRight className="change-day_icon" />
+                            <BsCaretRightFill className="change-day_icon--hover" />
                         </button>
                     </div>
                     <TextRadio
@@ -180,7 +207,7 @@ const GlobalChart = () => {
                             // onClick={(e) => e.stopPropagation()}
                             // onDoubleClick={modal.exit}
                             className="global-chart_image"
-                            src={map}
+                            src={visibleChart.data}
                             alt="global temperatures"
                             style={{ position: "absolute" }}
                             initial={fullscreen.from}
@@ -200,7 +227,7 @@ const GlobalChart = () => {
                         <img
                             className="global-chart_image--modal"
                             alt="global temperature"
-                            src={map}
+                            src={visibleChart.data}
                             onClick={(e) => {
                                 console.log(
                                     modalImg.current.getBoundingClientRect()

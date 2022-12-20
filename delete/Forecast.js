@@ -18,7 +18,7 @@ import testData from "../utils/testData";
 import decode from "../utils/decodeTempTimes";
 
 // Components
-import ForecastHeader from "./ForecastHeader";
+import ForecastHeader from "components/ForecastHeader";
 import FixedHorizontalGridlines from "./FixedHorizontalGridlines";
 import ScrollableExpandableChartElements from "./ScrollableExpandableChartElements";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
@@ -27,6 +27,7 @@ import ForecastChartLeftPadContent from "./ForecastChartLeftPadContent";
 // Custom Hooks
 import useHorizontalScrollCustom from "../hooks/useHorizontalScrollCustom";
 import useVisibleOnlyInViewport from "../hooks/useVisibleOnlyInViewport";
+import useAncestorVisibleOnlyInViewport from "../hooks/useAncestorVisibleOnlyInViewport";
 import useOverlayScrollbarsViewport from "../hooks/useOverlayScrollbarsViewport";
 import useLocale from "../hooks/useLocale";
 
@@ -44,6 +45,8 @@ const Forecast = ({ width, height, units, setUnits }) => {
     const chartViewport = useRef(null);
     useVisibleOnlyInViewport(chartViewport, ".day-label");
 
+    // useVisibleOnlyInViewport(chartViewport, ".experimental-x-tick");
+
     const locale = useLocale();
 
     // ====== State ======
@@ -59,6 +62,16 @@ const Forecast = ({ width, height, units, setUnits }) => {
         data.map((record, i) => [
             record.time,
             {
+                temp: record.temp,
+                position: i / (data.length - 1),
+            },
+        ])
+    );
+    const timeTempMap2 = new Map(
+        data.map((record, i) => [
+            record.time.valueOf(),
+            {
+                time: record.time,
                 temp: record.temp,
                 position: i / (data.length - 1),
             },
@@ -110,6 +123,25 @@ const Forecast = ({ width, height, units, setUnits }) => {
                     .map((tempTime) => tempTime.temp);
                 day.max = Math.max(...temps);
                 day.min = Math.min(...temps);
+            } else if (day.start.getHours() === 0) {
+                let temps = data.filter(
+                    (tempTime) =>
+                        tempTime.time.getDate() === day.start.getDate()
+                );
+                let max = temps.reduce((previous, current) => {
+                    if (previous.temp > current.temp) return previous;
+                    return current;
+                });
+                let min = temps.reduce((previous, current) => {
+                    if (previous.temp < current.temp) return previous;
+                    return current;
+                });
+                if (min.time.getHours() > 0) day.min = min.temp;
+                if (
+                    max.time.getHours() >= 12 &&
+                    max.time.getHours() < day.end.getHours()
+                )
+                    day.max = max.temp;
             }
         }
         return days;
@@ -137,7 +169,7 @@ const Forecast = ({ width, height, units, setUnits }) => {
 
     // OLD
     let dailyXwidth = 5.85 * times.length;
-    let hourlyXwidth = 22 * times.length;
+    let hourlyXwidth = 26 * times.length;
     const topPad = 28;
     const leftPad = 60;
     const bottomPad = 56;
@@ -255,7 +287,12 @@ const Forecast = ({ width, height, units, setUnits }) => {
     // const viewport = useOverlayScrollbarsViewport(scrollContainer);
     // BUG: doesn't work in Chrome or Edge; seems to be problems with intersection observer and svg elements
     // useVisibleOnlyInViewport(chartViewport, ".time-tick > .visx-line");
-
+    useAncestorVisibleOnlyInViewport(
+        chartViewport,
+        ".experimental-x-label",
+        ".experimental-x-tick",
+        forecastTimeScale
+    );
     return (
         <>
             <div
@@ -303,6 +340,7 @@ const Forecast = ({ width, height, units, setUnits }) => {
                                 timeView={forecastTimeScale}
                             />
                             <ScrollableExpandableChartElements
+                                timeTempMap2={timeTempMap2}
                                 timeTempMap={timeTempMap}
                                 bottomPad={bottomPad}
                                 data={data}

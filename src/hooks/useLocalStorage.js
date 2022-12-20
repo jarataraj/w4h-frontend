@@ -7,7 +7,9 @@ export const useLocalStorage = (key, initialState) => {
             return JSON.parse(storedValue);
         } else if (initialState instanceof Function) {
             return initialState();
-        } else return initialState;
+        } else {
+            return initialState;
+        }
     });
 
     useEffect(() => {

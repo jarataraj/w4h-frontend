@@ -1,0 +1,159 @@
+import { useRef } from "react";
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
+import useAncestorVisibleOnlyInViewport from "hooks/useAncestorVisibleOnlyInViewport";
+import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
+import useRemoveIfOverflowsAncestor from "hooks/useRemoveIfOverflowsAncestor";
+
+const Xticks = ({
+    forecastTimescale,
+    chartHeight,
+    bottomPad,
+    days,
+    timeData,
+    yMax,
+    chartMiddleViewport,
+}) => {
+    // ------ Remove Chart-Middle-Full Overflow ------
+    // Removes elements that fully or partly exist outside of the
+    // boundaries of chart-middle-full, and therefore incorrectly extend
+    // the scrollable area
+    const xTicksContainer = useRef(null);
+    const firstTime = useRef(null);
+    const lastTime = useRef(null);
+    useRemoveIfOverflowsAncestor(firstTime, xTicksContainer, forecastTimescale);
+    useRemoveIfOverflowsAncestor(lastTime, xTicksContainer, forecastTimescale);
+    // ------
+
+    useAncestorVisibleOnlyInViewport(
+        // ^ NOTE: didn't work in Chrome or Edge when used on SVG elements;
+        // seems to be problems with intersection observer and svg elements
+        chartMiddleViewport,
+        ".x-tick-hitbox",
+        ".x-tick",
+        forecastTimescale
+    );
+    useVisibleOnlyInViewport(
+        chartMiddleViewport,
+        ".x-label--min, .x-label--max",
+        forecastTimescale
+    );
+
+    return (
+        <>
+            {/* ------ Hourly X Ticks ------ */}
+            {forecastTimescale === "hourly" && (
+                <div className="x-ticks x-ticks--hourly">
+                    {Array.from(timeData.values())
+                        .slice(1, -1)
+                        .map(({ time, temp, position, vertex }) => {
+                            return (
+                                <div
+                                    key={`hourly-x-tick-${time.valueOf()}`}
+                                    className="x-tick x-tick--hourly"
+                                    style={{
+                                        left: `${position * 100}%`,
+                                        top: chartHeight - bottomPad,
+                                    }}
+                                >
+                                    <div
+                                        className={`x-tick-hitbox x-labels-container ${
+                                            vertex
+                                                ? `x-labels-container--${vertex}`
+                                                : ""
+                                        }`}
+                                    >
+                                        <div className="x-label x-label--time">
+                                            {((time.getHours() + 11) % 12) + 1}
+                                        </div>
+                                        <div className="x-label x-label--temp">
+                                            {Math.round(temp)}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                </div>
+            )}
+            {/* ------ Daily X Ticks ------ */}
+            {forecastTimescale === "daily" && (
+                <div
+                    className="x-ticks x-ticks--daily-times"
+                    ref={xTicksContainer}
+                >
+                    {Array.from(timeData.values())
+                        .slice(1, -1)
+                        .filter(({ time }) => {
+                            let hour = time.getHours();
+                            return (
+                                hour === 0 ||
+                                hour === 6 ||
+                                hour === 12 ||
+                                hour === 18
+                            );
+                        })
+                        .map(({ time, position }, i, array) => {
+                            return (
+                                <div
+                                    key={`daily-x-tick-${time.valueOf()}`}
+                                    className="x-tick"
+                                    style={{
+                                        left: `${position * 100}%`,
+                                        top: chartHeight - bottomPad,
+                                    }}
+                                >
+                                    <div
+                                        className="x-label x-tick-hitbox"
+                                        ref={
+                                            i === 0
+                                                ? firstTime
+                                                : i === array.length - 1
+                                                ? lastTime
+                                                : undefined
+                                        }
+                                    >
+                                        {`${((time.getHours() + 11) % 12) + 1}${
+                                            time.getHours() < 12 ? "a" : "p"
+                                        }`}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                </div>
+            )}
+            {/* ------ Min/Max Temp Labels ------ */}
+            {forecastTimescale === "daily" && (
+                <div className="x-ticks x-ticks--min-max">
+                    {days
+                        .filter((day) => day.min)
+                        .map((day) => {
+                            return (
+                                <div
+                                    key={`min-max-x-tick-${day.start.getDate()}`}
+                                    className="min-max-labels-container"
+                                    style={{
+                                        top: yMax + 24.6,
+                                        left: `${
+                                            timeData.get(day.start.valueOf())
+                                                .position * 100
+                                        }%`,
+                                        width: `${day.period}%`,
+                                    }}
+                                >
+                                    <div className="x-label--min">
+                                        <ImArrowDown2 />
+                                        {Math.round(day.min)}
+                                    </div>
+                                    <div className="x-label--max">
+                                        <ImArrowUp2 />
+                                        {Math.round(day.max)}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                </div>
+            )}
+        </>
+    );
+};
+
+export default Xticks;

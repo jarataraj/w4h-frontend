@@ -1,9 +1,32 @@
 import axios from "axios";
-const baseUrl = "/api/forecast";
+import { useQuery } from "@tanstack/react-query";
+import decodeForecastData from "utils/decodeForecastData";
+import decodeRawForecastData from "utils/decodeRawForecastData";
+// const baseUrl = "/api/forecast";
 
-const get = async (lat, lon) => {
-    const res = await axios.get(`${baseUrl}/${lat}-${lon}`);
-    return res.data;
+const forecasts = axios.create({
+    baseURL: "/api/forecast",
+});
+
+const getForecastById = async ({ queryKey }) => {
+    const [key, id] = queryKey;
+    const params = {
+        id,
+    };
+    const res = await forecasts.get("", { params });
+    return decodeRawForecastData(res.data);
+};
+const useForecast = (location, onSuccess, onError) => {
+    return useQuery(["forecast", location?.forecastId], getForecastById, {
+        enabled: Boolean(location),
+        onSuccess,
+        onError,
+        cacheTime: 60 * 60 * 1000,
+        staleTime: 5 * 60 * 1000,
+        refetchInterval: 10 * 60 * 1000,
+        // Already Default: refetchOnWindowFocus: true,
+        // Already Default: refetchOnReconnect: true
+    });
 };
 
-export default { get };
+export default useForecast;

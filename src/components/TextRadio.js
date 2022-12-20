@@ -28,18 +28,19 @@ const TextRadio = ({
             }}
             ref={outerRectRef}
         >
+            {/* Labels group of radio buttons for accessability */}
             <legend className="hide-visually">{groupName}</legend>
             {options.map((option) => {
                 return (
+                    // Measures the width of each option when it is styled as selected in order to properly size the underline
                     <div
                         key={`option-dimensioner-${option}`}
                         id={`option-dimensioner--${option}`}
-                        // className="text-radio-label"
+                        className="text-radio-dimensioner"
                         // onClick={() => setSelection(option)}
                         ref={option === selection ? innerRectRef : null}
                         aria-hidden={true}
                         style={{
-                            margin: "0 .4rem",
                             opacity: 1,
                             fontSize: 17,
                             color: "#333",
@@ -67,10 +68,8 @@ const TextRadio = ({
                             <motion.label
                                 id={`${groupName}-label--${option}`}
                                 htmlFor={`${groupName}-radio--${option}`}
-                                className="text-radio-label"
-                                style={{
-                                    padding: "0.4rem",
-                                }}
+                                className={`text-radio text-radio--${option}`}
+                                style={{}}
                                 animate={{
                                     color:
                                         option === selection ? "#fff" : "#bbb",
@@ -101,7 +100,7 @@ const TextRadio = ({
             </div>
 
             <motion.div
-                className="underline-selected"
+                className="text-radio-underline"
                 style={{
                     borderBottom: "1px solid #eee",
                     position: "absolute",

@@ -1,6 +1,6 @@
 import { AxisLeft } from "@visx/axis";
 
-const ForecastChartLeftPadContent = ({
+const ChartLeft = ({
     leftPad,
     topPad,
     bottomPad,
@@ -9,25 +9,28 @@ const ForecastChartLeftPadContent = ({
     tempScale,
     tempTwos,
     tempTens,
+    minorYLabels,
+    thermalIndex,
+    units,
 }) => {
     return (
         <div
-            className="forecast-left-pad-content-container"
+            className="chart-left-container"
             style={{
                 width: leftPad,
             }}
         >
             <h4
-                className="days-header chart-header"
-                style={{ height: topPad + 1.5 }}
+                className="chart-header chart-header--days"
+                style={{ height: topPad + 1 }}
             >
                 Day<span className="chart-header-space-fix"></span>:
             </h4>
             <h4
-                className="temp-units"
+                className="y-title"
                 style={{ top: topPad, height: yHeight, width: leftPad }}
             >
-                &#176;C
+                {`${thermalIndex} (\u00B0${units})`}
             </h4>
             <svg
                 className="y-axis-and-labels"
@@ -42,11 +45,11 @@ const ForecastChartLeftPadContent = ({
                     strokeWidth={1}
                     tickLength={7}
                     tickStroke="#555"
-                    tickValues={tempTwos}
-                    tickClassName="temp-tick"
+                    tickValues={minorYLabels}
+                    tickClassName="y-tick"
                     tickLabelProps={(tick) => {
                         return {
-                            className: "temp-label",
+                            className: "y-label",
                         };
                     }}
                     axisLineClassName="temp-axis"
@@ -58,10 +61,10 @@ const ForecastChartLeftPadContent = ({
                     tickLength={7}
                     tickStroke="#777"
                     tickValues={tempTens}
-                    tickClassName="temp-tick"
+                    tickClassName="y-tick"
                     tickLabelProps={(tick) => {
                         return {
-                            className: "temp-label",
+                            className: "y-label",
                         };
                     }}
                     axisLineClassName="temp-axis"
@@ -71,10 +74,10 @@ const ForecastChartLeftPadContent = ({
                 className="bottom-left-container"
                 style={{ height: bottomPad }}
             >
-                <h4 className="times-header chart-header" style={{}}>
+                <h4 className="chart-header chart-header--times" style={{}}>
                     Time<span className="chart-header-space-fix"></span>:
                 </h4>
-                <h4 className="temps-header chart-header" style={{}}>
+                <h4 className="chart-header chart-header--temps" style={{}}>
                     Temp<span className="chart-header-space-fix"></span>:
                 </h4>
             </div>
@@ -82,4 +85,4 @@ const ForecastChartLeftPadContent = ({
     );
 };
 
-export default ForecastChartLeftPadContent;
+export default ChartLeft;

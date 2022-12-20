@@ -1,7 +1,7 @@
-import { useLayoutEffect, useRef } from "react";
-
+import { useLayoutEffect } from "react";
+// Hides elements whose content overflows the element's box size
 // ENHANCEMENT: use resize observer to determine if hidding is needed upon resize
-const useHideOverflowed = (ref) => {
+const useHideIfOverflowing = (ref) => {
     useLayoutEffect(() => {
         let element = ref.current;
         if (element) {
@@ -12,4 +12,4 @@ const useHideOverflowed = (ref) => {
     }, [ref]);
 };
 
-export default useHideOverflowed;
+export default useHideIfOverflowing;

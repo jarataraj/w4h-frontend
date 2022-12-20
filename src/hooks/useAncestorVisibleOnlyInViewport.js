@@ -1,20 +1,23 @@
 import { useEffect } from "react";
 
-// Hides elements via opacity that are not fully contained by viewport. Consider changing to useHideIfOverflowsAncestor
-const useVisibleOnlyInViewport = (
+const useAncestorVisibleOnlyInViewport = (
     viewport,
     descendantsSelector,
+    ancestorSelector,
     dependencies
 ) => {
-    const deps = dependencies || true;
     useEffect(() => {
         if (viewport.current) {
             const toggleVisibility = (entries, observer) => {
                 entries.forEach((entry) => {
                     if (entry.intersectionRatio === 1) {
-                        entry.target.style.opacity = 1;
+                        entry.target.closest(
+                            ancestorSelector
+                        ).style.opacity = 1;
                     } else {
-                        entry.target.style.opacity = 0;
+                        entry.target.closest(
+                            ancestorSelector
+                        ).style.opacity = 0;
                     }
                 });
             };
@@ -33,7 +36,7 @@ const useVisibleOnlyInViewport = (
                 observer.observe(target);
             }
         }
-    }, [viewport, descendantsSelector, deps]);
+    }, [viewport, descendantsSelector, ancestorSelector, dependencies]);
 };
 
-export default useVisibleOnlyInViewport;
+export default useAncestorVisibleOnlyInViewport;

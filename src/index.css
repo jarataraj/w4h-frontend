@@ -1,3 +1,22 @@
+/* |||||| Global, Page |||||| */
+
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-background-color);
+    padding: 0;
+    margin: 0;
+}
+.page-container {
+    width: 100%;
+    height: 100%;
+}
+.hide-visually {
+    position: absolute;
+    left: -999em;
+}
+
 /* ====== Fonts ====== */
 @font-face {
     font-family: "ossl";
@@ -16,44 +35,41 @@
 font-family: 'Merriweather', serif;
 font-family: 'Rubik', sans-serif; */
 
-/* ====== Global, Page ====== */
-
 :root {
+    /* ------ Fonts ------ */
     --body-font-family: "ossl", sans-serif;
     --header-font-family: "domine";
     --title-font-family: "merriweather";
+    /* ------ Colors ------ */
     --light-background-color: #f7f5f7;
     /* --light-background-color: #f7f6f9; */
     /* ^ other option: f7f6f9 */
     --dark-background-color: #423f49;
     /* ^ Other options = 494549, 2a2e2c, 4d4c4d, 5e5b64 */
+    --global-chart-controls-background-color: #333;
+    --low-temp: #41b1df;
+    --high-temp: #ff7491;
 }
 
-#root {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--light-background-color);
-    padding: 0;
-    margin: 0;
-}
-
-.page-container {
-    width: 100%;
-    height: 100%;
-}
+/* ------ Override Defaults ------ */
 
 button {
     padding: 0;
     margin: 0;
 }
-
-.hide-visually {
-    position: absolute;
-    left: -999em;
+button:hover,
+.text-radio {
+    cursor: pointer;
+}
+input[type="radio"] {
+    border: 1px solid red;
+}
+button:disabled:hover {
+    cursor: default;
 }
 a {
     color: inherit;
+    display: flex;
 }
 
 /* ====== Rainbow Bar ====== */
@@ -63,7 +79,7 @@ a {
     /* ^ 15@1050, 12@320 */
 }
 
-/* ====== Header ====== */
+/* |||||| Site Header |||||| */
 
 header {
     display: flex;
@@ -94,7 +110,7 @@ header {
     /* ^ 31@1050, 14@320 */
 }
 
-/* ====== Global Chart ====== */
+/* |||||| Global Chart |||||| */
 
 .global-chart_container {
     width: 100%;
@@ -119,9 +135,25 @@ header {
 
 .global-chart_image {
     border-radius: 6px 6px 0 0;
+    border-width: 1px 1px 0;
+    border-color: #333;
+    border-style: solid;
+    box-sizing: border-box;
     z-index: 2;
     /* width: min(900px, calc(100% + 2px)); */
-    width: min(900px, 100%);
+    width: min(952px, 100%);
+    aspect-ratio: 902/455;
+}
+@media screen and (max-width: 902px) {
+    .global-chart_image {
+        border-radius: 0;
+    }
+}
+@media screen and (max-width: 900px) {
+    .global-chart_image {
+        border-width: 1px 0 0;
+        aspect-ratio: 900/455;
+    }
 }
 
 .global-chart_image--modal {
@@ -135,12 +167,12 @@ header {
     width: 100%;
 }
 
-/* ------ Global Chart Controls ------ */
+/* ====== Global Chart Controls ====== */
 
 .global-chart_controls-container {
     z-index: 2;
     position: relative;
-    width: min(900px, 100%);
+    width: min(952px, 100%);
     box-sizing: border-box;
     background-color: var(--dark-background-color);
     display: flex;
@@ -149,16 +181,22 @@ header {
     border-radius: 0 0 6px 6px;
     padding: 2px 10px 3px;
     /* experimental */
-    background-color: #333;
+    background-color: var(--global-chart-controls-background-color);
     font-family: "ossr", sans-serif;
 }
+@media screen and (max-width: 902px) {
+    .global-chart_controls-container {
+        border-radius: 0;
+    }
+}
 
+/* ...... Time Controls ...... */
 .global-chart_time-controls {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     font-size: 18px;
-    width: min(100%, 13rem);
+    width: min(100%, 13.3rem);
 }
 .global-chart_time-controls > h4 {
     color: #eaeaea;
@@ -166,15 +204,46 @@ header {
     font-weight: 300;
 }
 
-.global-chart_time-controls > button {
+.change-day {
+    color: #fff;
     font-size: 20px;
     display: flex;
+    position: relative;
 }
-.global-chart_time-controls > button:first-of-type:hover {
-    transform: scale(1.1) translateX(-1px);
+/* ...... Text Radio Controls ...... */
+.text-radio-dimensioner {
+    margin: 0 0.4em;
 }
-.global-chart_time-controls > button:last-of-type:hover {
-    transform: scale(1.1) translateX(1px);
+.text-radio {
+    padding: 0 0.4em;
+}
+
+/* ...... Hover Effects ...... */
+.change-day_icon--hover {
+    display: none;
+    color: #ddd;
+    font-size: 20px;
+    background-color: var(--global-chart-controls-background-color);
+    /* transform: scale(1.2); */
+}
+.change-day:hover .change-day_icon--hover {
+    display: block;
+}
+.change-day:hover .change-day_icon {
+    display: none;
+}
+/* ...... When disabled ...... */
+.change-day:disabled {
+    color: #666;
+}
+.change-day:disabled:hover {
+    transform: none;
+}
+.change-day:disabled:hover .change-day_icon--hover {
+    display: none;
+}
+.change-day:disabled:hover .change-day_icon {
+    display: block;
 }
 
 .global-chart_fullscreen-button {
@@ -194,28 +263,13 @@ header {
     transition: font-size 0.1s linear, opacity 0.1s linear;
 } */
 
-/* ------------ */
+/* |||||| Search |||||| */
 
-/* ====== Search ====== */
-
-/* clears the ‘X’ from Internet Explorer */
-input[type="search"]::-ms-clear {
-    display: none;
-    width: 0;
-    height: 0;
-}
-input[type="search"]::-ms-reveal {
-    display: none;
-    width: 0;
-    height: 0;
-}
-
-/* clears the ‘X’ from Chrome */
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-    display: none;
+.search-container {
+    width: min(90%, 35rem);
+    margin: 4em 0em 4em;
+    position: relative;
+    z-index: 1;
 }
 
 .search-form {
@@ -229,8 +283,9 @@ input[type="search"]::-webkit-search-results-decoration {
     font-family: var(--body-font-family);
     border-radius: 0.6rem;
     padding: 0.15rem 0.6rem 0.25rem;
-    margin: 0.5rem auto;
+    /* margin: 0rem auto; */
     border: 1px solid #555;
+    box-shadow: 0px 1px 4px #ddd;
 }
 .search-input:focus {
     /* outline-color: #c90054; */
@@ -248,6 +303,16 @@ input[type="search"]::-webkit-search-results-decoration {
 .search-loader {
     right: 0.5rem;
 }
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid;
+    border-color: #000 transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotate 2s linear infinite;
+}
 
 .clear-search {
     color: #222;
@@ -257,45 +322,224 @@ input[type="search"]::-webkit-search-results-decoration {
     font-size: 1.7rem;
     right: 0.2rem;
 }
-
-/* |||||| FORECASTS |||||| */
-
-.chartViewport {
-    /* gives the chart it's own stacking context */
-    border: 1px solid red;
-    z-index: 1;
+.search-container-background {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background-color: var(--light-background-color); */
 }
 
+/* ...... Recents ...... */
+.recent-locations {
+    /* margin: 0.6em 0 0; */
+    margin-bottom: 0;
+    padding-left: 0.5em;
+    display: flex;
+    overflow: hidden;
+}
+.recent-locations > * {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.recent-item {
+    display: flex;
+    /* Changed to 1 by useVisibleOnlyInViewport */
+    opacity: 0;
+}
+.recent-locations > .bold {
+    font-family: "ossr";
+}
+.recent-locations a {
+    color: #222;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: #ccc;
+}
+.recent-locations a:hover {
+    text-decoration-color: #c90054;
+    color: #000;
+}
+
+/* ...... Current Location ...... */
+.current-location-container {
+    margin-top: 0.6em;
+}
+.current-location {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 0 0.3rem;
+    /* margin: 0; */
+    text-decoration: none;
+    background: none;
+    color: #222;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-family: var(--body-font-family);
+}
+.current-location-loader {
+    margin: 1px;
+}
+.current-location:hover {
+    color: #a80046;
+    border-radius: 1rem;
+}
+.current-location:hover > svg {
+    color: #c90054;
+}
+/* ...... Search Errors ...... */
+.search-error-veil {
+    background-color: var(--light-background-color);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.search-error {
+    z-index: -2;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    border: 1px solid rgb(255, 90, 90);
+    border-radius: 6px;
+    background-color: #ffdfdf;
+    padding: 1px 2px;
+}
+.search-error-icon {
+    color: rgb(255, 47, 47);
+    font-size: 24px;
+    margin-right: 0.1em;
+}
+.search-error-text {
+    margin: 0 0.2em;
+    padding: 0;
+}
+.search-error-coverage-link {
+    display: inline;
+    text-decoration-color: #555;
+}
+.search-error-coverage-link:hover {
+    color: #000;
+    text-decoration-thickness: 2px;
+    text-decoration-color: #000;
+}
+.close-error {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: #333;
+}
+.close-error:hover {
+    color: #000;
+}
+/* ------ Override Defaults ------ */
+/* clears the ‘X’ from Internet Explorer */
+input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
+input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+}
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
+
+/* |||||| Forecasts |||||| */
+
+.forecast-width-provider {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+/* .chartViewport {
+    gives the chart it's own stacking context
+    border: 1px solid red;
+    z-index: 1;
+} */
 .forecast-container {
     display: flex;
     flex-direction: column;
+    /* width: min(800px, 100%) !important; */
 }
-/* ------ Header ------ */
-.forecast-location {
-    margin: 0;
+/* ====== Temporary Changes ====== */
+/* Experimental changes to be implemented less sloppily */
+.topPad-background {
+    width: 100%;
+    z-index: 11;
+    background-color: var(--light-background-color);
+    position: absolute;
+    top: 0;
 }
+.bottomPad-background {
+    width: 100%;
+    z-index: 11;
+    background-color: var(--light-background-color);
+    position: absolute;
+    bottom: 0;
+}
+.forecast-chart-background {
+    filter: blur(2px);
+    /* filter: blur(2px) opacity(0.75); */
+}
+
+/* ====== Header ====== */
+
 .forecast-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    padding: 0 8px;
 }
+
+/* ------ Header Title ------ */
+.forecast-location {
+    margin: 0;
+    font-family: var(--header-font-family);
+    font-size: 30px;
+    font-weight: 500;
+    color: #282828;
+}
+
+/* ------ Header Buttons ------ */
 .forecast-header-buttons {
     display: flex;
     align-items: center;
-    padding: 0 0 2px;
+    padding: 0 0 5px;
     height: 23px;
-}
-a {
-    display: flex;
 }
 .forecast-header-buttons > * {
     display: flex;
     align-items: flex-end;
     font-size: 20px;
-    /* border: solid 1px green; */
+}
+.pinned-icon {
+    color: rgb(80, 81, 109);
 }
 .pin-icon--hovered {
     color: rgb(80, 81, 109);
+    display: none;
+}
+.pinned-icon--hovered {
+    color: #7b7c96;
     display: none;
 }
 .pin-button:hover .pin-icon--hovered {
@@ -304,7 +548,14 @@ a {
 .pin-button:hover .pin-icon {
     display: none;
 }
+.pin-button:hover .pinned-icon--hovered {
+    display: inline;
+}
+.pin-button:hover .pinned-icon {
+    display: none;
+}
 .map-button {
+    font-size: 22px;
     margin: 0 6px 0 4px;
 }
 .map-button:hover .map-icon {
@@ -317,36 +568,26 @@ a {
 .map-button:hover .map-icon--hovered {
     display: inline;
 }
-.time-view-button {
-    width: 60px;
-    height: 21px;
-    box-sizing: content-box;
-    display: flex;
-    justify-content: center;
-    font-size: 18px;
-    border-radius: 6px;
-    border: 1px solid #222;
-}
-.time-view-button:hover {
-    /* outline: 1px solid #999; */
-    color: white;
-    background-color: rgb(103, 105, 140);
-    /* border-color: #e41c6f; */
+.toggle-key {
+    width: 90px;
 }
 
 /* ====== Chart ====== */
+/* See chartLayout.png for layout glossary */
 
 .forecast-chart-container {
     position: relative;
-    width: 100%;
+    /* width: 100%; */
+    width: calc(100%-2px);
     border: 1px solid #333;
-    border-radius: 6px;
     display: flex;
+    box-shadow: 0px 1px 4px #bbb;
+    overflow: hidden;
 }
 
-/* ------ LeftPad area of Chart ------ */
+/* ------ Chart Left ------ */
 
-.forecast-left-pad-content-container {
+.chart-left-container {
     flex-shrink: 0;
     position: relative;
 }
@@ -356,17 +597,14 @@ a {
     font-weight: 300;
     color: #222;
 }
-.temp-units {
-    position: absolute;
-    left: 0;
-    display: flex;
-    align-items: center;
-    padding-left: 5px;
-    font-family: "ossl";
-    font-weight: 300;
-    font-size: 18px;
+.chart-header-space-fix {
+    display: inline-block;
+    width: 0.06em;
 }
-.days-header {
+
+/* ...... Top Left ...... */
+
+.chart-header--days {
     width: 100%;
     padding: 1px 0;
     display: flex;
@@ -378,21 +616,42 @@ a {
     top: 0;
     right: 0;
 }
-.chart-header-space-fix {
-    display: inline-block;
-    width: 0.06em;
+
+/* ...... Center Left ...... */
+
+.y-title {
+    position: absolute;
+    left: 4px;
+    top: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-family: "rubik";
+    font-weight: 400;
+    color: #333;
+    font-size: 18px;
+    text-decoration: underline;
+    text-underline-offset: 0px;
 }
 .temp-axis {
     /* Fixes improper placement of axis line */
     transform: translate(0px, -0.5px);
 }
-.temp-label {
+.y-label {
     font-family: "ossl";
     font-size: 14px;
     text-anchor: end;
     fill: #222;
     transform: translate(-2px, 5px);
 }
+.y-axis-and-labels {
+    fill: "transparent";
+    flex-shrink: 0;
+}
+
+/* ...... Bottom Left ...... */
 .bottom-left-container {
     border-top: solid 1px #222;
     position: absolute;
@@ -402,65 +661,43 @@ a {
     flex-direction: column;
     align-items: flex-end;
 }
-.times-header {
+.chart-header--times {
     margin-top: 0.4em;
 }
 
-/* ------ Chart area ------ */
-.experimental-time-grid {
+/* ------ Chart Middle ------ */
+
+.only-visible-in-viewport {
+    transition: opacity 0.1s linear;
+}
+.chart-middle-viewport {
+    position: relative;
+    width: 100%;
+    flex-shrink: 1;
+    height: 100%;
+}
+.chart-middle-full {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.x-grid,
+.x-ticks {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 12;
+    width: 100%;
+    height: 100%;
 }
-.os-content {
-    /* So that position:sticky for horizontal gridlines works */
-    width: auto !important;
-}
-.y-axis-and-labels {
-    fill: "transparent";
-    flex-shrink: 0;
+.x-gridline,
+.x-tick {
+    margin-left: -0.5px;
 }
 
-.forecast-scrollable-container {
-    position: relative;
-    /* width: 550px; */
-    height: 100%;
-    /* For Native Scrollbars (when not using Overlay Scrollbars Component) */
-    /* overflow-x: scroll;
-    overflow-y: hidden; */
-}
-.forecast-scrollable-expandable-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.forecast-data-background {
-    z-index: 10;
-}
-.forecast-temp-grid {
-    z-index: 11;
-    position: sticky;
-    left: 0;
-    top: 0;
-}
-.forecast-data-line {
-    z-index: 13;
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-.forecast-days {
-    display: flex;
-    z-index: 12;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.forecast-day-filter {
-    box-sizing: border-box;
-}
+/* ...... Top Middle ...... */
+
 .day-label {
     margin: 0;
     padding: 0 8px;
@@ -476,52 +713,157 @@ a {
     font-weight: 300;
     font-size: 16px;
 }
-.forecast-hourly-x-axis {
+/* ...... Center Middle ...... */
+
+.forecast-data-background {
     position: absolute;
     top: 0;
-    right: 0;
-    z-index: 12;
+    left: 0;
+    z-index: 10;
 }
-.forecast-daily-x-axis {
+.forecast-data-line {
+    z-index: 13;
     position: absolute;
     top: 0;
-    right: 0;
-    z-index: 12;
+    left: 0;
+    pointer-events: none;
+}
+.y-grid {
+    z-index: 11;
+    position: sticky;
+    left: 0;
+    top: 0;
 }
 
-.time-label {
-    text-anchor: middle;
-    transform: translateY(7px);
+.x-gridline {
+    position: absolute;
+    border-left: 1px dotted #000;
 }
-.only-visible-in-viewport {
+.x-gridline--midnight {
+    border-left: 1px solid #222;
+}
+
+/* ...... Bottom Middle ...... */
+
+.min-max-labels-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.x-tick {
+    height: 5px;
+    width: 1px;
+    background-color: #222;
+    position: absolute;
+    display: flex;
+    flex-flow: column;
+    overflow: visible;
+    align-items: center;
+    /* Initial opacity=0, changed to 1 by intersection observer */
+    opacity: 0;
     transition: opacity 0.1s linear;
 }
+.x-tick > * {
+    position: relative;
+    /* INVESTIGATE: Why 6.5px? Otherwise not lined up with time and temp headers */
+    top: 6.5px;
+}
+.x-labels-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    border-radius: 5px;
+}
+.x-labels-container--min,
+.x-labels-container--max {
+    transform: translateY(-2px);
+    padding: 0px 3px 1px;
+}
+.x-labels-container--min {
+    border: 2px solid var(--low-temp);
+}
+.x-labels-container--max {
+    border: 2px solid var(--high-temp);
+}
+.x-label--min,
+.x-label--max {
+    display: flex;
+    align-items: center;
+    margin: 0 0.4em;
+    /* Initial opacity=0, changed to 1 by intersection observer */
+    opacity: 0;
+    transition: opacity 0.1s linear;
+}
+.x-label--min > svg {
+    color: var(--low-temp);
+}
+.x-label--max > svg {
+    color: var(--high-temp);
+}
 
-.intersection-observer {
+/* ------ Days ------ */
+
+.forecast-days {
+    display: flex;
+    z-index: 12;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.forecast-day {
+    display: flex;
+    position: relative;
+}
+.forecast-day-filter {
+    position: absolute;
+    width: 100%;
+    right: 0;
+    box-sizing: border-box;
+}
+
+/* ......Hover Effects...... */
+
+.forecast-days:hover .forecast-day:not(:hover) .forecast-day-filter.daily {
+    /* ^ container hovered, days not hovered, only when daily */
+    /* backdrop-filter: brightness(0.94); */
+    backdrop-filter: brightness(0.85);
+}
+.forecast-days:hover .forecast-day:hover .forecast-day-filter.daily {
+    /* ^ container hovered, day hovered, only when daily */
+    /* backdrop-filter: brightness(1.02); */
+    backdrop-filter: brightness(1.03);
+}
+/* .forecast-hourly-x-axis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 12;
+} */
+/* .forecast-daily-x-axis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 12;
+} */
+/* .time-label {
+    text-anchor: middle;
+    transform: translateY(7px);
+} */
+/* .intersection-observer {
     border: 1px solid red;
     height: 500px;
     width: 100%;
     position: absolute;
     top: 0;
     right: 0;
-}
-
-/* ......Hover Effect...... */
-.forecast-days:hover .forecast-day:not(:hover) .forecast-day-filter.daily {
-    /* ^ container hovered, days not hovered, only when daily */
-    backdrop-filter: brightness(0.94);
-}
-.forecast-days:hover .forecast-day:hover .forecast-day-filter.daily {
-    /* ^ container hovered, day hovered, only when daily */
-    backdrop-filter: brightness(1.02);
-}
+} */
 
 /* ------ Scrollbar ------ */
 
 .forecast-chart-container .os-scrollbar {
     height: 10px;
 }
-
 .forecast-chart-container .os-scrollbar-track {
     /* needs !important to override the high specificity of the defaults  */
     background-color: #ccc !important;
@@ -537,7 +879,7 @@ a {
     bottom: 2px;
 }
 
-/* ......Hover and Active Effects...... */
+/* ...... Hover and Active Effects ...... */
 /* When hovered */
 .forecast-chart-container .os-scrollbar:hover .os-scrollbar-handle {
     height: 9px;
@@ -552,7 +894,153 @@ a {
 }
 /* Can't select track when handle is active */
 
-/* |||||| MODAL |||||| */
+/* ====== Key ====== */
+
+.forecast-key-container {
+    display: flex;
+    align-items: flex-end;
+    height: 0;
+    overflow: hidden;
+}
+.forecast-key {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    /* place above shadow of forecast container */
+    z-index: 5;
+    overflow: hidden;
+    /* border-radius: 0 0 5px 5px; */
+    border: solid 1px black;
+    border-top: none;
+}
+.forecast-key-category {
+    /* display: flex; */
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 180px;
+    padding: 3px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.forecast-key-category-label {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-family: "ossr";
+    font-weight: 300;
+    color: #191919;
+}
+
+/* ====== Footer ====== */
+.forecast-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 8px 0;
+}
+.forecast-footer-buttons {
+    display: flex;
+    align-items: center;
+    padding: 0 0 5px;
+    height: 23px;
+}
+.forecast-footer-buttons-label {
+    padding: 0;
+    margin: 0;
+    font-family: "ossl";
+    font-weight: 300;
+    font-size: 20px;
+}
+.forecast-footer-buttons > * {
+    display: flex;
+    align-items: flex-end;
+    font-size: 20px;
+    top: 3px;
+    margin-left: 0.5em;
+}
+.button-switch {
+    position: relative;
+    height: 21px;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 1px solid #222;
+}
+.button-switch:hover {
+    /* outline: 1px solid #999; */
+    color: white;
+    background-color: rgb(103, 105, 140);
+    /* border-color: #e41c6f; */
+}
+.button-switch-label {
+    position: absolute;
+}
+.toggle-units {
+    width: 1.8em;
+}
+.toggle-thermal-index {
+    width: 3.2em;
+}
+.toggle-forecast-timescale {
+    width: 62px;
+}
+
+/* |||||| About |||||| */
+
+.about-article {
+    /* for visual centering */
+    /* padding: 2em 0 0 1.5rem; */
+    /* max-width: 30rem; */
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid black; */
+    padding-bottom: 2em;
+    /* margin-top: 1em; */
+}
+.about-row {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+.about-section {
+    max-width: 30rem;
+    /* for visual centering */
+    padding-left: 1.5rem;
+    /* border: 1px solid #333; */
+    /* border-radius: 20px; */
+    margin: 1em 0;
+    /* box-shadow: 0px 1px 4px #bbb; */
+}
+.about-section-header {
+    /* margin-top: 3.5rem; */
+    margin-bottom: 0.1em;
+    /* padding-bottom: 0.2rem; */
+    font-family: var(--header-font-family);
+    font-size: 30px;
+    font-weight: 500;
+    color: #282828;
+}
+.about-paragraph {
+    font-family: var(--body-font-family);
+    font-size: 18px;
+    letter-spacing: -0.003rem; /* looks better to my eye */
+    line-height: 1.8rem;
+    margin: 0.8em 0;
+}
+.extra-bold {
+    font-family: "ossm";
+}
+
+/* |||||| Modal |||||| */
 
 .modal-background {
     z-index: 100;
@@ -585,7 +1073,7 @@ a {
     border-radius: 15px;
 }
 
-/* ====== Footer ====== */
+/* |||||| Footer |||||| */
 
 footer {
     background-color: #222;
@@ -595,7 +1083,9 @@ footer {
     justify-content: right;
     padding: 0.2rem 1rem 0.4rem;
 }
-
+.show-coverage-map {
+    color: #fff;
+}
 .show-coverage-map:hover {
     transform: scale(1.03);
     text-decoration: underline;
@@ -617,7 +1107,8 @@ footer {
     }
 }
 
-/* ====== Accessability ====== */
+/* |||||| Accessability |||||| */
+
 @media screen and (prefers-reduced-motion: reduce) {
     * {
         /* Very short durations means JavaScript that relies on events still works */
@@ -644,50 +1135,6 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.recents {
-    padding-left: 0.5em;
-}
-.recents > .bold {
-    font-family: "ossr";
-}
-.recents > a {
-    color: black;
-    text-decoration: none;
-}
-.recents > a:hover {
-    text-decoration: underline;
-}
-
-article h2 {
-    font-weight: 500;
-    color: #282828;
-}
-
-article {
-    padding: 0 0 0 1.5rem; /* for visual centering */
-    max-width: 30rem;
-    display: flex;
-    flex-flow: column;
-}
-.bold {
-    font-family: "ossm";
-    /* font-weight: 600; */
-}
-h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 0.1em;
-    /* padding-bottom: 0.2rem; */
-    font-family: var(--header-font-family);
-    font-size: 30px;
-}
-article p {
-    font-family: var(--body-font-family);
-    font-size: 18px;
-    letter-spacing: -0.003rem; /* looks better to my eye */
-    line-height: 1.8rem;
-    margin: 0.8em 0;
 }
 
 body {
@@ -717,7 +1164,7 @@ h4 {
     margin: 0;
 }
 
-article {
+.about-article {
     /* background: rgb(239, 243, 250);
     border-radius: 20px;
     border: 3px solid #555;
@@ -770,35 +1217,9 @@ form {
     justify-content: center;
     align-items: center;
 }
-.search-container {
-    /* display: inline-flex;
-    flex-flow: column;
-    align-items: flex-start; */
-    width: min(90%, 34rem);
-    margin: 2em 0em 5em;
-}
 
 .error {
     text-align: center;
-}
-
-.sub-button {
-    display: flex;
-    align-items: center;
-    border: none;
-    padding: 0 0.2rem;
-    margin: 0 0.1em;
-    text-decoration: none;
-    background: none;
-    color: #222;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    text-align: center;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    font-family: var(--body-font-family);
 }
 
 #spacingFix {
@@ -823,24 +1244,4 @@ form {
     to {
         transform: rotate(360deg);
     }
-}
-
-.sub-button:hover {
-    color: #c90054;
-    border-radius: 1rem;
-}
-
-.loader {
-    width: 18px;
-    height: 18px;
-    border: 2px solid;
-    border-color: #000 transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotate 2s linear infinite;
-}
-
-.recents > * {
-    font-size: 18px;
 }

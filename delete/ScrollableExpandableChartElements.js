@@ -8,11 +8,13 @@ import { withParentSize } from "@visx/responsive";
 import { curveMonotoneX } from "@visx/curve";
 import { scaleTime } from "@visx/scale";
 import { Group } from "@visx/group";
-import useHideOverflowed from "../hooks/useHideOverflowed";
+import useHideOverflowed from "../hooks/useHideIfOverflowing";
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 
 import colorScale from "../utils/colorScale";
 
 const ScrollableExpandableChartElements = ({
+    timeTempMap2,
     timeTempMap,
     bottomPad,
     data,
@@ -36,12 +38,15 @@ const ScrollableExpandableChartElements = ({
     useHideOverflowed(hideOverflowed);
     const scrollbarBuffer = 13;
 
+    // TODO: remove first and last of vertical grid, tick, and label
+
     return (
         <>
             <div
                 className="forecast-scrollable-expandable-container"
                 style={{ width: dataWidth, height: chartHeight }}
             >
+                {/* ====== Color Coded Background ====== */}
                 <svg
                     className="forecast-data-background"
                     style={{ width: dataWidth, height: chartHeight }}
@@ -63,71 +68,27 @@ const ScrollableExpandableChartElements = ({
                             );
                         })}
                     </Group>
-                    {/* {timeView === "hourly" && (
-                        <motion.svg
-                            style={{
-                                width: dataWidth,
-                                height: chartHeight,
-                                zIndex: 11,
-                                position: "absolute",
-                            }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2, type: "tween" }}
-                        >
-                            <GridColumns
-                                className="forecast-temp-grid--0000J"
-                                scale={timeScale}
-                                height={yHeight}
-                                top={yMin}
-                                tickValues={times.filter(
-                                    (time) => time.getHours() !== 0
-                                )}
-                                stroke="#999"
-                                strokeWidth={1}
-                                strokeDasharray="1,2"
-                                style={{
-                                    vectorEffect: "non-scaling-stroke",
-                                }}
-                            />
-                        </motion.svg>
-                    )} */}
-                    {/* {timeView === "daily" && (
-                        <motion.svg
-                            style={{
-                                width: dataWidth,
-                                height: chartHeight,
-                                zIndex: 11,
-                                position: "absolute",
-                            }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2, type: "tween" }}
-                        >
-                            <GridColumns
-                                className="forecast-temp-grid--0000J"
-                                scale={timeScale}
-                                height={yHeight}
-                                top={yMin}
-                                tickValues={times.filter((time) => {
-                                    let hour = time.getHours();
-                                    return (
-                                        hour === 0 ||
-                                        hour === 6 ||
-                                        hour === 12 ||
-                                        hour === 18
-                                    );
-                                })}
-                                stroke="#999"
-                                strokeWidth={1}
-                                strokeDasharray="1,2"
-                                style={{
-                                    vectorEffect: "non-scaling-stroke",
-                                }}
-                            />
-                        </motion.svg>
-                    )} */}
                 </svg>
+                {/* ====== Vertical Grid ====== */}
+                {/* ------ Midnights ------ */}
+                {Array.from(timeTempMap.entries())
+                    .slice(1, -1)
+                    .filter(([time]) => time.getHours() === 0)
+                    .map(([time, { temp, position }]) => {
+                        return (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    bottom: bottomPad,
+                                    left: `${position * 100}%`,
+                                    height: yHeight,
+                                    borderLeft: "1px solid #222",
+                                    marginLeft: -0.5,
+                                }}
+                            ></div>
+                        );
+                    })}
+                {/* ------ Hourly Gridlines ------ */}
                 {timeView === "hourly" && (
                     <motion.div
                         className="experimental-time-grid"
@@ -136,8 +97,9 @@ const ScrollableExpandableChartElements = ({
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.2, type: "tween" }}
                     >
-                        {Array.from(timeTempMap.entries()).map(
-                            ([time, { temp, position }]) => {
+                        {Array.from(timeTempMap.entries())
+                            .slice(1, -1)
+                            .map(([time, { temp, position }]) => {
                                 return (
                                     <div
                                         style={{
@@ -152,10 +114,10 @@ const ScrollableExpandableChartElements = ({
                                         }}
                                     ></div>
                                 );
-                            }
-                        )}
+                            })}
                     </motion.div>
                 )}
+                {/* ------ Daily Gridlines ------ */}
                 {timeView === "daily" && (
                     <motion.div
                         className="experimental-time-grid"
@@ -165,6 +127,7 @@ const ScrollableExpandableChartElements = ({
                         transition={{ duration: 0.2, type: "tween" }}
                     >
                         {Array.from(timeTempMap.entries())
+                            .slice(1, -1)
                             .filter(([time, { temp, position }]) => {
                                 let hour = time.getHours();
                                 return (
@@ -192,9 +155,123 @@ const ScrollableExpandableChartElements = ({
                             })}
                     </motion.div>
                 )}
-
-                {/* For some reason need to use motion.div rather than motion.svg for opacity transitions */}
+                {/* ------ Hourly X Ticks ------ */}
                 {timeView === "hourly" && (
+                    <div
+                        className="experimental-time-grid x-ticks"
+                        style={{ width: dataWidth, height: chartHeight }}
+                    >
+                        {Array.from(timeTempMap.entries())
+                            .slice(1, -1)
+                            .map(([time, { temp, position }]) => {
+                                return (
+                                    <div
+                                        className="experimental-x-tick"
+                                        style={{
+                                            position: "absolute",
+                                            left: `${position * 100}%`,
+                                            top: chartHeight - bottomPad,
+                                            display: "flex",
+                                            flexFlow: "column",
+                                            overflow: "visible",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <div className="experimental-x-label">
+                                            {((time.getHours() + 11) % 12) + 1}
+                                        </div>
+                                        <div className="experimental-x-label">
+                                            {Math.round(temp)}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </div>
+                )}
+                {/* ------ Daily X Ticks ------ */}
+                {timeView === "daily" && (
+                    <div
+                        className="experimental-time-grid x-ticks"
+                        style={{ width: dataWidth, height: chartHeight }}
+                    >
+                        {Array.from(timeTempMap.entries())
+                            .slice(1, -1)
+                            .filter(([time, { temp, position }]) => {
+                                let hour = time.getHours();
+                                return (
+                                    hour === 0 ||
+                                    hour === 6 ||
+                                    hour === 12 ||
+                                    hour === 18
+                                );
+                            })
+                            .map(([time, { temp, position }]) => {
+                                return (
+                                    <div
+                                        className="experimental-x-tick"
+                                        style={{
+                                            position: "absolute",
+                                            left: `${position * 100}%`,
+                                            top: chartHeight - bottomPad,
+                                            display: "flex",
+                                            flexFlow: "column",
+                                            overflow: "visible",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <div className="experimental-x-label">
+                                            {`${
+                                                ((time.getHours() + 11) % 12) +
+                                                1
+                                            }${
+                                                time.getHours() < 12 ? "a" : "p"
+                                            }`}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </div>
+                )}
+                {/* ------ Min/Max Temp Labels ------ */}
+                {timeView === "daily" &&
+                    days
+                        .filter((day) => day.min)
+                        .map((day) => {
+                            return (
+                                <motion.div
+                                    className="min-max-temps-container"
+                                    style={{
+                                        position: "absolute",
+                                        top: yMax + 24.6,
+                                        left: `${
+                                            timeTempMap2.get(
+                                                day.start.valueOf()
+                                            ).position * 100
+                                        }%`,
+                                        width: `${day.period}%`,
+                                    }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{
+                                        duration: 0.2,
+                                        type: "tween",
+                                    }}
+                                >
+                                    <div className="min-label">
+                                        <ImArrowDown2 />
+                                        {Math.round(day.min)}
+                                    </div>
+                                    <div className="max-label">
+                                        <ImArrowUp2 />
+                                        {Math.round(day.max)}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+
+                {/* X AXIS */}
+                {/* For some reason need to use motion.div rather than motion.svg for opacity transitions */}
+                {/* {timeView === "hourly" && (
                     <motion.svg
                         className="forecast-hourly-x-axis"
                         style={{ width: dataWidth, height: chartHeight }}
@@ -263,7 +340,8 @@ const ScrollableExpandableChartElements = ({
                             }
                         />
                     </motion.svg>
-                )}
+                )} */}
+
                 {/* <motion.div
                     style={{ display: "flex" }}
                     initial={{ opacity: 0 }}
@@ -422,10 +500,6 @@ const ScrollableExpandableChartElements = ({
                                         position: "absolute",
                                         top: yMin,
                                         right: 0,
-                                        borderLeft:
-                                            day.start.getHours() === 0
-                                                ? "1px solid #333"
-                                                : "none",
                                     }}
                                 ></div>
                             </div>

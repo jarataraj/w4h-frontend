@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const charts = axios.create({
-    baseURL: "http://localhost:3003/charts",
+    baseURL: "/charts",
 });
 
 const blobToDataURL = (blob) => {
@@ -19,18 +19,15 @@ const blobToDataURL = (blob) => {
 };
 
 const getChart = async ({ queryKey }) => {
-    const [key, date, highLow, fullscreen] = queryKey;
-    const id = fullscreen
-        ? `${date}_${highLow}_highres.png`
-        : `${date}_${highLow}.png`;
-    const res = await charts.get(`/${id}`, {
+    const [key, date, highLow] = queryKey;
+    const res = await charts.get(`/${date}_UTCI_${highLow}_highres.png`, {
         responseType: "blob",
     });
     return await blobToDataURL(res.data);
 };
 
-const useChart = (date, highLow, fullscreen, enable) => {
-    return useQuery(["chart", date, highLow, fullscreen], getChart, {
+const useChart = (date, highLow, enable) => {
+    return useQuery(["chart", date, highLow], getChart, {
         enabled: enable,
         cacheTime: 10 * 60 * 1000,
         staleTime: 5 * 60 * 1000,

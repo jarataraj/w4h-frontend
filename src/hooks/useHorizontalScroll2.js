@@ -18,8 +18,7 @@ const useHorizontalScroll = () => {
                             0 && e.deltaY > 0
                     )
                 )
-                    console.log(e);
-                element.scrollBy(e.deltaY, 0);
+                    element.scrollBy(e.deltaY, 0);
             };
             element.addEventListener("wheel", onWheel);
             return () => element.removeEventListener("wheel", onWheel);

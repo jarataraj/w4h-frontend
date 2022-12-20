@@ -1,12 +1,12 @@
-const decode = (data) => {
+const decodeForecastData = (data) => {
+    const start = new Date(data.forecastStart);
     return data.tempTimesEncoded
         .map((tempTime) => {
             return {
                 time: new Date(
-                    data.forecastStart.getTime() +
-                        (tempTime % 1000) * 1000 * 60 * 60
+                    start.getTime() + (tempTime % 1000) * 1000 * 60 * 60
                 ),
-                temp: Math.floor(tempTime / 1000) / 100,
+                temp: Math.floor(tempTime / 1000) / 100 - 100,
             };
         })
         .sort(
@@ -15,4 +15,4 @@ const decode = (data) => {
         );
 };
 
-export default decode;
+export default decodeForecastData;
