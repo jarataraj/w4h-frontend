@@ -7,14 +7,7 @@ import RecentSearches from "./RecentSearches";
 import CurrentLocation from "./CurrentLocation";
 import Error from "./Error";
 
-const Search = ({
-    forecasts,
-    newForecast,
-    // pinnedForecasts,
-    // nonPinnedForecast,
-    // setNonPinnedForecast,
-    openCoverage,
-}) => {
+const Search = ({ forecasts, newForecast, openCoverage }) => {
     // ====== State ======
     const searchContainer = useRef();
     const queryClient = useQueryClient();
@@ -24,6 +17,7 @@ const Search = ({
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoadingSearchInput, setIsLoadingSearchInput] = useState(false);
     // ------ Recent Locations ------
+    const [forecastRecentLocation, setForecastRecentLocation] = useState();
     const [recentLocations, setRecentLocations] = useLocalStorage(
         "recentLocationsV8",
         []
@@ -41,19 +35,6 @@ const Search = ({
         // Set recents
         setRecentLocations(newRecentLocations);
     };
-    // OLD
-    // const modifyRecentLocationsOld = (latestLocation) => {
-    //     let newRecentLocations = recentLocations
-    //         // Remove potential duplicate recent
-    //         .filter((location) => location.name !== latestLocation.name)
-    //         //Limit to maximum of 2 other recents + 1 nonPinnedForecast +
-    //         //any pinnedForecasts before adding latest recent
-    //         .slice(0, 3 + pinnedForecasts.length);
-    //     // Add new recent to beginning of recents
-    //     newRecentLocations.unshift(latestLocation);
-    //     // Set recents
-    //     setRecentLocations(newRecentLocations);
-    // };
     // ------ Current Location ------
     const [reverseGeolocateCoords, setReverseGeolocateCoords] = useState();
     const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
@@ -93,6 +74,7 @@ const Search = ({
     const resetSearchState = () => {
         setSearchQuery("");
         setReverseGeolocateCoords();
+        setForecastRecentLocation();
         searchInput.current.blur();
         setInput("");
         setIsLoadingSearchInput(false);
@@ -135,10 +117,11 @@ const Search = ({
                             forecasts={forecasts}
                             newForecast={newForecast}
                             recentLocations={recentLocations}
-                            // pinnedForecasts={pinnedForecasts}
-                            // nonPinnedForecast={nonPinnedForecast}
-                            // setNonPinnedForecast={newForecast}
                             addRecent={addRecent}
+                            forecastRecentLocation={forecastRecentLocation}
+                            setForecastRecentLocation={
+                                setForecastRecentLocation
+                            }
                             input={input}
                             setInput={setInput}
                             setIsLoadingSearchInput={setIsLoadingSearchInput}

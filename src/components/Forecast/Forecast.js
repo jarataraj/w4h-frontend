@@ -1,11 +1,23 @@
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import {
+    useState,
+    useRef,
+    useLayoutEffect,
+    useEffect,
+    useContext,
+} from "react";
 import { useResizeObserver, useScrollIntoView } from "@mantine/hooks";
+import { AppNewlyMountedContext } from "App";
 
 // Charting
 import { scaleLinear, scaleTime } from "@visx/scale";
 
 // Animation
-import { motion, useMotionValue, animate } from "framer-motion";
+import {
+    motion,
+    useMotionValue,
+    animate,
+    AnimatePresence,
+} from "framer-motion";
 
 // Components
 import ForecastHeader from "./ForecastHeader";
@@ -36,26 +48,23 @@ const Forecast = ({
     toggleThermalIndex,
     location,
     data,
-    isPinned,
-    // nonPinnedForecast,
-    // setNonPinnedForecast,
-    // pinnedForecasts,
-    // setPinnedForecasts,
 }) => {
-    // ====== State and Ref Hooks ======
+    // ====== State  ======
+    const appIsNewlyMounted = useContext(AppNewlyMountedContext);
     const scrollContainer = useRef(null);
-    const isNewlyMounted = useRef(true);
     const [showKey, toggleShowKey] = useBinaryState([false, true]);
+    const [alert, setAlert] = useState(null);
+    const newAlert = (message) => {
+        if (alert) {
+            clearTimeout(alert.timeout);
+        }
+        const timeout = setTimeout(() => {
+            setAlert(null);
+        }, 400);
+        setAlert({ message, timeout });
+    };
     const [forecastWidthProvider, forecastWidthProviderRect] =
         useResizeObserver();
-    const ifNewlyMounted = (valueWhenTrue, valueWhenFalse) => {
-        if (isNewlyMounted.current) {
-            isNewlyMounted.current = false;
-            return valueWhenTrue;
-        } else {
-            return valueWhenFalse;
-        }
-    };
 
     // |||||| CHARTING ||||||
     // ====== Data ======
@@ -225,8 +234,10 @@ const Forecast = ({
         cancelable: true,
     });
     useEffect(() => {
-        scrollIntoView({ alignment: "center" });
-    }, [scrollIntoView]);
+        if (!location.isPinned) {
+            scrollIntoView({ alignment: "center" });
+        }
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <>
@@ -248,7 +259,7 @@ const Forecast = ({
                     height: 0,
                     marginBottom: 0,
                 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: appIsNewlyMounted ? 0 : 0.7 }}
             >
                 <div
                     className="forecast-container"
@@ -262,11 +273,7 @@ const Forecast = ({
                         location={location}
                         showKey={showKey}
                         toggleShowKey={toggleShowKey}
-                        isPinned={isPinned}
-                        // nonPinnedForecast={nonPinnedForecast}
-                        // setNonPinnedForecast={setNonPinnedForecast}
-                        // pinnedForecasts={pinnedForecasts}
-                        // setPinnedForecasts={setPinnedForecasts}
+                        newAlert={newAlert}
                     />
                     <div
                         className="forecast-chart-container"
@@ -290,6 +297,30 @@ const Forecast = ({
                             thermalIndex={thermalIndex}
                             units={units}
                         />
+                        <AnimatePresence>
+                            {alert && (
+                                <motion.div
+                                    className="forecast-alert-container"
+                                    style={{
+                                        top: topPad,
+                                        left: leftPad,
+                                        height: yHeight,
+                                    }}
+                                    exit={{
+                                        opacity: 0,
+                                    }}
+                                    transition={{
+                                        type: "tween",
+                                        ease: "easeIn",
+                                        duration: 1.2,
+                                    }}
+                                >
+                                    <h4 className="forecast-alert-message">
+                                        {alert.message}
+                                    </h4>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                         <OverlayScrollbarsComponent
                             className="chart-middle-viewport"
                             options={{

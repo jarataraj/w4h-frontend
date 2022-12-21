@@ -1,3 +1,4 @@
+import useIsNewlyMounted from "hooks/useIsNewlyMounted";
 import { BsPin, BsPinFill } from "react-icons/bs";
 import { IoMapOutline, IoMap } from "react-icons/io5";
 import ButtonSwitch from "./ButtonSwitch";
@@ -8,18 +9,16 @@ const ForecastHeader = ({
     location,
     showKey,
     toggleShowKey,
-    isPinned,
-    // nonPinnedForecast,
-    // setNonPinnedForecast,
-    // pinnedForecasts,
-    // setPinnedForecasts,
+    newAlert,
 }) => {
+    const isNewlyMounted = useIsNewlyMounted();
     const pinForecast = () => {
         // unpinned will only ever be the first forecast
         setForecasts([
             { ...forecasts[0], isPinned: true },
             ...forecasts.slice(1),
         ]);
+        newAlert("Pinned");
     };
     const unPinForecast = () => {
         if (forecasts[0].key === location.key) {
@@ -28,6 +27,7 @@ const ForecastHeader = ({
                 { ...forecasts[0], isPinned: false },
                 ...forecasts.slice(1),
             ]);
+            newAlert("Unpinned");
         } else {
             // ... remove the forecast
             setForecasts(
@@ -35,27 +35,8 @@ const ForecastHeader = ({
             );
         }
     };
-    // const pinForecastOld = () => {
-    //     // limit to 10 pinned forecasts for now
-    //     setPinnedForecasts(
-    //         [{ ...location, animateEntrance: false }].concat(
-    //             pinnedForecasts.slice(0, 9)
-    //         )
-    //     );
-    //     setNonPinnedForecast(null);
-    // };
-    // const unPinForecastOld = () => {
-    //     setPinnedForecasts(
-    //         pinnedForecasts.filter(
-    //             (pinnedLocation) => pinnedLocation !== location
-    //         )
-    //     );
-    //     if (!nonPinnedForecast) {
-    //         setNonPinnedForecast({ ...location, animateEntrance: false });
-    //     }
-    // };
     const toggleIsPinned = () => {
-        if (isPinned) {
+        if (location.isPinned) {
             unPinForecast();
         } else {
             pinForecast();
@@ -68,15 +49,17 @@ const ForecastHeader = ({
             <div className="forecast-header-buttons">
                 <button
                     className="pin-button"
-                    title={isPinned ? "Un-pin forecast" : "Pin forecast"}
+                    title={
+                        location.isPinned ? "Un-pin forecast" : "Pin forecast"
+                    }
                     onClick={toggleIsPinned}
                 >
-                    {isPinned ? (
+                    {location.isPinned ? (
                         <BsPinFill className="pinned-icon" />
                     ) : (
                         <BsPin className="pin-icon" />
                     )}
-                    {isPinned ? (
+                    {location.isPinned ? (
                         <BsPinFill className="pinned-icon--hovered" />
                     ) : (
                         <BsPinFill className="pin-icon--hovered" />
@@ -92,8 +75,8 @@ const ForecastHeader = ({
                     className="toggle-key"
                     name={showKey ? "hide key" : "show key"}
                     onClick={toggleShowKey}
-                    animationDelay={0.2}
-                    animationDuration={0.2}
+                    animationDelay={isNewlyMounted ? 0 : 0.2}
+                    animationDuration={isNewlyMounted ? 0 : 0.2}
                 />
             </div>
         </div>

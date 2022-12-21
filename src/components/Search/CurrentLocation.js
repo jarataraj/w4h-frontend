@@ -28,6 +28,14 @@ const CurrentLocation = ({
         );
     };
 
+    // De-activate query onSuccess (otherwise a query observer persists
+    // regardless of whether a forecast for the current location is shown
+    // or not)
+    // const onReverseGeolocateSuccess = () => {
+    //     onSuccess();
+    //     setReverseGeolocateCoords;
+    // };
+
     useReverseGeolocate(reverseGeolocateCoords, onSuccess, onError);
 
     return (

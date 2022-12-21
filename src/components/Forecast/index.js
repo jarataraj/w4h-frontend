@@ -9,11 +9,6 @@ const ForecastFacade = ({
     thermalIndex,
     toggleThermalIndex,
     location,
-    isPinned,
-    nonPinnedForecast,
-    setNonPinnedForecast,
-    pinnedForecasts,
-    setPinnedForecasts,
 }) => {
     const forecast = useForecast(location);
 
@@ -28,11 +23,6 @@ const ForecastFacade = ({
                 toggleThermalIndex={toggleThermalIndex}
                 location={location}
                 data={forecast.data}
-                isPinned={isPinned}
-                nonPinnedForecast={nonPinnedForecast}
-                setNonPinnedForecast={setNonPinnedForecast}
-                pinnedForecasts={pinnedForecasts}
-                setPinnedForecasts={setPinnedForecasts}
             />
         );
     } else if (forecast.isError) {

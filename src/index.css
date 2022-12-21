@@ -535,7 +535,7 @@ input[type="search"]::-webkit-search-results-decoration {
     color: rgb(80, 81, 109);
 }
 .pin-icon--hovered {
-    color: rgb(80, 81, 109);
+    color: #7b7c96;
     display: none;
 }
 .pinned-icon--hovered {
@@ -570,6 +570,33 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .toggle-key {
     width: 90px;
+}
+
+/* ====== Alerts ====== */
+
+.forecast-alert-container {
+    /* backdrop-filter: saturate(60%) brightness(0.9); */
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    background-color: none;
+    pointer-events: none;
+    /* background-color: #000; */
+}
+.forecast-alert-message {
+    padding: 6px 11px;
+    margin: 0;
+    border: 2px solid #555;
+    border-radius: 12px;
+    background-color: var(--light-background-color);
+    /* background-color: rgb(226, 223, 233); */
+    font-size: 22px;
+    font-family: ossl;
+    font-weight: 300;
+    color: #111;
 }
 
 /* ====== Chart ====== */
@@ -834,30 +861,6 @@ input[type="search"]::-webkit-search-results-decoration {
     /* backdrop-filter: brightness(1.02); */
     backdrop-filter: brightness(1.03);
 }
-/* .forecast-hourly-x-axis {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 12;
-} */
-/* .forecast-daily-x-axis {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 12;
-} */
-/* .time-label {
-    text-anchor: middle;
-    transform: translateY(7px);
-} */
-/* .intersection-observer {
-    border: 1px solid red;
-    height: 500px;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-} */
 
 /* ------ Scrollbar ------ */
 
@@ -1082,11 +1085,12 @@ footer {
     display: flex;
     justify-content: right;
     padding: 0.2rem 1rem 0.4rem;
-}
-.show-coverage-map {
     color: #fff;
 }
-.show-coverage-map:hover {
+footer > button {
+    color: #fff;
+}
+footer > button:hover {
     transform: scale(1.03);
     text-decoration: underline;
 }

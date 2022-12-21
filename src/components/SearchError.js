@@ -42,23 +42,6 @@ const SearchError = ({ message, originBox }) => {
     let animate = { top: errorRect ? -1 * (errorRect.height + offset) : -30 };
     // const exit = { opacity: 0 };
 
-    // const previous = usePrevious({ message, animate, initial });
-
-    // if (previous?.message) {
-    //     animate = previous.animate;
-    //     initial = previous.initial;
-    // } else if (originBox.current) {
-    //     // Animate entrance from bottom if scroll position is too high
-    //     const scrollHeight = window.scrollY;
-    //     const originHeight = originBox.current.getBoundingClientRect().top;
-    //     const buffer = 50;
-    //     if (scrollHeight > originHeight - buffer) {
-    //         initial = { bottom: 0 };
-    //         animate = {
-    //             bottom: errorRect ? -1 * (errorRect.height + offset) : -30,
-    //         };
-    //     }
-    // }
     return (
         <motion.div
             className="search-error"
@@ -66,9 +49,6 @@ const SearchError = ({ message, originBox }) => {
             transition={transition}
             initial={animation.initial}
             animate={animation.animate}
-            // initial={initial}
-            // animate={{ opacity: 1, ...animate }}
-            // exit={exit}
         >
             <BiError className="search-error-icon" />
             <p className="search-error-text">{message}</p>

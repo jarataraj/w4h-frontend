@@ -17,7 +17,6 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
-import map from "../assets/images/MillerCroppedNew.png";
 import useChart from "../services/charts";
 import useLocale from "hooks/useLocale";
 
