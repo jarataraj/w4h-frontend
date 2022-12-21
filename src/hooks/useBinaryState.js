@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useBinaryState = (options) => {
+const useBinaryState = (options = [false, true]) => {
     const [state, setState] = useState(options[0]);
     const toggleState = () => {
         if (state === options[0]) {

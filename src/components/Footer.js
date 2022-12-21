@@ -1,13 +1,48 @@
+import useBinaryState from "hooks/useBinaryState";
+import { AnimatePresence, motion } from "framer-motion";
+import ColorBar from "./ColorBar";
+import { MdClear } from "react-icons/md";
+
 const Footer = ({ openCoverage }) => {
+    const [contact, toggleContact] = useBinaryState();
+
     return (
         <footer>
-            <button className="show-coverage-map">contact</button>
-            <span>&emsp;|&emsp;</span>
-            <button className="show-coverage-map">additional options</button>
-            <span>&emsp;|&emsp;</span>
-            <button className="show-coverage-map" onClick={openCoverage}>
-                coverage map
-            </button>
+            <AnimatePresence>
+                {contact && (
+                    <motion.div
+                        className="contact-info"
+                        initial={{ top: 0 }}
+                        animate={{ top: -45 }}
+                        exit={{
+                            top: 0,
+                            transition: { type: "tween", duration: 0.2 },
+                        }}
+                    >
+                        jordan@weatherforhumans.com
+                        <button
+                            className="close-contact-info"
+                            onClick={toggleContact}
+                        >
+                            <MdClear />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <ColorBar className="footer-color-bar" />
+            <div className="footer-links-container">
+                <button className="show-coverage-map" onClick={toggleContact}>
+                    contact
+                </button>
+                <span>&emsp;|&emsp;</span>
+                <button className="show-coverage-map">
+                    additional options
+                </button>
+                <span>&emsp;|&emsp;</span>
+                <button className="show-coverage-map" onClick={openCoverage}>
+                    coverage map
+                </button>
+            </div>
         </footer>
     );
 };

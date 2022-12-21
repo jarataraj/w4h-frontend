@@ -99,7 +99,6 @@ function App() {
                     })}
                 </AnimatePresence>
                 <About />
-                <ColorBar width="20px" />
                 <Footer openCoverage={openCoverage} />
                 <StaticModal openCondition={coverageModal} exit={closeCoverage}>
                     {(modal) => (
