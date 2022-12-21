@@ -1,7 +1,7 @@
 import { useRef, useContext } from "react";
 import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
 import { useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useForecast from "services/forecasts";
 import { AppNewlyMountedContext } from "App";
 
@@ -61,43 +61,52 @@ const RecentSearches = ({
         };
     };
 
-    if (recents.length) {
-        return (
-            <motion.p
-                className="recent-locations"
-                ref={recentsContainer}
-                initial={{ height: 0, marginTop: 0 }}
-                animate={{ height: "auto", marginTop: ".5em" }}
-                transition={{ duration: appIsNewlyMounted ? 0 : 0.7 }}
-            >
-                <span className="bold">Recent:</span>&emsp;
-                {recents.map((location, i) => {
-                    if (i === 0) {
-                        return (
-                            // First recent has no space and not part of useVisibleOnlyInViewport
-                            <a
-                                href="./"
-                                key={location.name}
-                                onClick={onRecentClick(location)}
-                            >
-                                {location.name}
-                            </a>
-                        );
-                    } else {
-                        return (
-                            // Additional recents preceded by a space and are in useVisibleOnlyInViewport
-                            <span className="recent-item" key={location.name}>
-                                &emsp;
-                                <a href="./" onClick={onRecentClick(location)}>
+    return (
+        <AnimatePresence>
+            {recents.length && (
+                <motion.p
+                    className="recent-locations"
+                    ref={recentsContainer}
+                    initial={{ height: 0, marginTop: 0 }}
+                    animate={{ height: "auto", marginTop: ".5em" }}
+                    exit={{ height: 0, marginTop: 0 }}
+                    transition={{ duration: appIsNewlyMounted ? 0 : 0.7 }}
+                >
+                    <span className="bold">Recent:</span>&emsp;
+                    {recents.map((location, i) => {
+                        if (i === 0) {
+                            return (
+                                // First recent has no space and not part of useVisibleOnlyInViewport
+                                <a
+                                    href="./"
+                                    key={location.name}
+                                    onClick={onRecentClick(location)}
+                                >
                                     {location.name}
                                 </a>
-                            </span>
-                        );
-                    }
-                })}
-            </motion.p>
-        );
-    }
+                            );
+                        } else {
+                            return (
+                                // Additional recents preceded by a space and are in useVisibleOnlyInViewport
+                                <span
+                                    className="recent-item"
+                                    key={location.name}
+                                >
+                                    &emsp;
+                                    <a
+                                        href="./"
+                                        onClick={onRecentClick(location)}
+                                    >
+                                        {location.name}
+                                    </a>
+                                </span>
+                            );
+                        }
+                    })}
+                </motion.p>
+            )}
+        </AnimatePresence>
+    );
 };
 
 export default RecentSearches;
