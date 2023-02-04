@@ -32,6 +32,8 @@ export const AppNewlyMountedContext = createContext();
 function App() {
     // ====== State ======
     const appIsNewlyMounted = useIsNewlyMounted(800);
+    const [globalChartFullscreen, toggleGlobalChartFullscreen] =
+        useBinaryState();
     // ------ Forecasts ------
     const [thermalIndex, toggleThermalIndex] = useBinaryState(["UTCI", "WBGT"]);
     const [units, toggleUnits] = useBinaryState(["C", "F"]);
@@ -74,9 +76,25 @@ function App() {
     return (
         <>
             <AppNewlyMountedContext.Provider value={appIsNewlyMounted}>
+                <motion.div
+                    className="global-chart-fullscreen-backdrop-filter"
+                    animate={
+                        globalChartFullscreen
+                            ? {
+                                  backdropFilter: "blur(4px) brightness(0)",
+                              }
+                            : {
+                                  backdropFilter: "blur(0px) brightness(1)",
+                              }
+                    }
+                    transition={{ duration: 0.5 }}
+                ></motion.div>
                 <ColorBar />
                 <Header />
-                <GlobalChart />
+                <GlobalChart
+                    fullscreen={globalChartFullscreen}
+                    toggleFullscreen={toggleGlobalChartFullscreen}
+                />
                 <Search
                     forecasts={forecasts}
                     newForecast={newForecast}

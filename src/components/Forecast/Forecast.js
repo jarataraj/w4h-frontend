@@ -301,11 +301,13 @@ const Forecast = ({
                             {alert && (
                                 <motion.div
                                     className="forecast-alert-container"
+                                    key={"static"}
                                     style={{
                                         top: topPad,
                                         left: leftPad,
                                         height: yHeight,
                                     }}
+                                    initial={{ opacity: 1 }}
                                     exit={{
                                         opacity: 0,
                                     }}

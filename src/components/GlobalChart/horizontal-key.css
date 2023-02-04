@@ -1,0 +1,61 @@
+/* Bottom */
+.global-chart-horizontal-key-container {
+    z-index: 1;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    overflow: visible;
+    box-sizing: border-box;
+}
+.global-chart-key {
+    margin-top: 2px;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid black;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    /* place above shadow of forecast container */
+    z-index: 5;
+    overflow: hidden;
+    /* border-radius: 0 0 5px 5px; */
+    border: solid 1px black;
+    /* border-bottom: 0; */
+}
+
+@media screen and (max-width: 1090px) {
+    .global-chart-key {
+        margin-top: 0;
+        border-radius: 0;
+        border-width: 0 0 1px;
+    }
+}
+.global-chart-key-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+.global-chart-key-category {
+    /* display: flex; */
+    min-height: 5px;
+    /* max-height: 14px; */
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20px;
+    padding: 3px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.global-chart-key-category-label {
+    font-size: 14px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-family: "ossr";
+    font-weight: 300;
+    color: #000;
+}

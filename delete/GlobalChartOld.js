@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { BsCaretRight, BsCaretLeft } from "react-icons/bs";
+import {
+    BsCaretLeft,
+    BsCaretLeftFill,
+    BsCaretRight,
+    BsCaretRightFill,
+} from "react-icons/bs";
 import { IoExpand, IoClose, IoExpandSharp } from "react-icons/io5";
 
-import Modal from "./StaticModal";
+import TextRadio from "./TextRadio";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,21 +17,55 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
-import map from "../assets/images/MillerCropped.png";
+import useChart from "../services/charts";
+import useLocale from "hooks/useLocale";
 
 const GlobalChart = () => {
-    const [day, setDay] = useState(0);
-    const [fullscreen, setFullscreen] = useState(false);
+    const locale = useLocale();
+    // ====== Testing ======
+    const [day, setDay] = useState(
+        new Date(new Date(Date.now()).setMonth(10, 17))
+    );
+    const dateString = new Intl.DateTimeFormat(locale, {
+        weekday: "long",
+        month: "numeric",
+        day: "numeric",
+    }).format(day);
+
+    const changeDay = (deltaDays) => {
+        let newDay = new Date(day);
+        newDay.setDate(newDay.getDate() + deltaDays);
+        setDay(newDay);
+    };
+
+    // const [day, setDay] = useState(new Date(Date.now()));
+    const [fullscreen, setFullscreen] = useState({ state: "closed" });
+    const [thermalIndex, setThermalIndex] = useState("UTCI");
+    const [highLow, setHighLow] = useState("Highs");
+    const [units, setUnits] = useState("C");
+
+    // const isFullscreen = fullscreen.state !== "closed";
+    const datestring = (offset = 0) => {
+        let date = new Date(day.valueOf());
+        date.setDate(date.getDate() + offset);
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    };
+    const highLowString = highLow.toLowerCase();
+    const visibleChart = useChart(datestring(), highLowString, true);
+    const nextChart = useChart(
+        datestring(1),
+        highLowString,
+        visibleChart.isFetched
+    );
+    const previousChart = useChart(
+        datestring(-1),
+        highLowString,
+        visibleChart.isFetched
+    );
 
     const globalImg = useRef();
     const modalImg = useRef();
-
-    const charts = useEffect(() => {
-        console.log(
-            "TODO - fetch knowledge of latest charts, build list of needed charts"
-        );
-        //TODO
-    }, []);
+    const transitionImg = useRef();
 
     const fullscreenTransition = {
         duration: 0.5,
@@ -34,43 +73,44 @@ const GlobalChart = () => {
         bounce: 0,
     };
 
-    const openFullscreen = () => {
-        disableBodyScroll(modalImg, {
-            reserveScrollBarGap: true,
-        });
-        let boundingClient = globalImg.current.getBoundingClientRect();
-        let viewportWidth = window.document.body.clientWidth;
-        let viewportHeight = window.document.body.clientHeight;
+    const getModalPositions = () => {
+        let originalPos = globalImg.current.getBoundingClientRect();
+        let viewportWidth = window.document.documentElement.clientWidth;
+        let viewportHeight = window.document.documentElement.clientHeight;
         let screenAspect = viewportWidth / viewportHeight;
-        let imgAspect = boundingClient.width / boundingClient.height;
-        let from = {
-            top: `${boundingClient.y + window.scrollY}px`,
-            left: `${boundingClient.x + window.scrollX}px`,
-            width: `${boundingClient.width}px`,
+        let imgAspect = originalPos.width / originalPos.height;
+        let original = {
+            top: `${originalPos.y}px`,
+            left: `${originalPos.x}px`,
+            width: `${originalPos.width}px`,
         };
-        let to, width, height;
+        let width;
         if (screenAspect > imgAspect) {
             width = viewportHeight * screenAspect;
-            to = {
-                top: `${window.scrollY}px`,
-                left: `${window.scrollX + viewportWidth / 2 - width / 2}px`,
-                width: `${width}px`,
-            };
         } else {
-            height = viewportWidth / imgAspect;
-            to = {
-                top: `${window.scrollY + viewportHeight / 2 - height / 2}px`,
-                left: "0px",
-                width: `${viewportWidth}px`,
-            };
+            width = viewportWidth;
         }
-        console.log({ from, to });
-        setFullscreen({ from, to });
+        if (viewportWidth > 1200) width -= 40;
+        let height = width / imgAspect;
+        let modal = {
+            top: `${viewportHeight / 2 - height / 2}px`,
+            left: `${viewportWidth / 2 - width / 2}px`,
+            width: `${width}px`,
+        };
+        return { original, modal };
+    };
+
+    const openFullscreen = () => {
+        disableBodyScroll(transitionImg, {
+            reserveScrollBarGap: true,
+        });
+        let { original, modal } = getModalPositions();
+        setFullscreen({ from: original, to: modal, state: "opening" });
     };
 
     const closeFullscreen = () => {
-        enableBodyScroll(modalImg);
-        setFullscreen(false);
+        let { original, modal } = getModalPositions();
+        setFullscreen({ from: modal, to: original, state: "closing" });
     };
 
     // Clear any scroll locks on unmount
@@ -91,81 +131,114 @@ const GlobalChart = () => {
                     onDoubleClick={openFullscreen}
                     ref={globalImg}
                     className="global-chart_image"
-                    src={map}
+                    src={visibleChart.data}
                     alt="global temperatures"
-                    style={{ opacity: fullscreen ? 0 : 1 }}
+                    style={{ opacity: fullscreen.state === "closed" ? 1 : 0 }}
                 />
                 <div className="global-chart_controls-container">
                     <div className="global-chart_time-controls">
-                        <button>
-                            <BsCaretLeft />
+                        <button
+                            className="change-day change-day--previous"
+                            disabled={previousChart.data ? false : true}
+                            onClick={() => changeDay(-1)}
+                        >
+                            <BsCaretLeft className="change-day_icon" />
+                            <BsCaretLeftFill className="change-day_icon--hover" />
                         </button>
-                        <h4>Today, August 1</h4>
-                        <button>
-                            <BsCaretRight />
+                        <h4>{dateString}</h4>
+                        {/* <h4>{`${day.getMonth()}, ${day.getDate()}`}</h4> */}
+                        <button
+                            className="change-day change-day--next"
+                            disabled={nextChart.data ? false : true}
+                            onClick={() => changeDay(1)}
+                        >
+                            <BsCaretRight className="change-day_icon" />
+                            <BsCaretRightFill className="change-day_icon--hover" />
                         </button>
                     </div>
+                    <TextRadio
+                        groupName="Temperature"
+                        options={["UTCI", "WBGT"]}
+                        selection={thermalIndex}
+                        setSelection={setThermalIndex}
+                        className="thermal-index-selection"
+                    />
+                    <TextRadio
+                        groupName="High-or-Low"
+                        options={["Highs", "Lows"]}
+                        selection={highLow}
+                        setSelection={setHighLow}
+                        className="high-low-selection"
+                    />
                     <button
                         className="global-chart_fullscreen-button"
-                        onClick={fullscreen ? closeFullscreen : openFullscreen}
+                        onClick={openFullscreen}
                     >
                         <IoExpand />
                     </button>
                 </div>
             </div>
-            <Modal openCondition={fullscreen} exit={closeFullscreen}>
-                {(modal) => (
-                    <motion.img
-                        ref={modalImg}
-                        onClick={(e) => e.stopPropagation()}
-                        onDoubleClick={modal.exit}
-                        className="global-chart_image"
-                        src={map}
-                        alt="global temperatures"
-                        style={{ position: "absolute" }}
-                        initial={fullscreen.from}
-                        animate={fullscreen.to}
-                        exit={fullscreen.from}
-                        transition={modal.transition}
-                    />
-                )}
-            </Modal>
-            {/* <AnimatePresence>
-                {fullscreen && (
-                    <motion.div
-                        className="modal-background"
-                        key={"modal-background"}
-                        initial={{
-                            backdropFilter: "blur(0px) brightness(1)",
-                        }}
-                        animate={{
+            {fullscreen.state !== "closed" && (
+                <motion.div
+                    className="modal-background"
+                    initial={{
+                        backdropFilter: "blur(0px) brightness(1)",
+                    }}
+                    animate={fullscreen.state}
+                    variants={{
+                        opening: {
                             backdropFilter: "blur(4px) brightness(.3)",
-                        }}
-                        exit={{
+                        },
+                        open: {
+                            backdropFilter: "blur(4px) brightness(.3)",
+                        },
+                        closing: {
                             backdropFilter: "blur(0px) brightness(1)",
-                        }}
-                        transition={fullscreenTransition}
-                        style={{
-                            height: window.document.body.scrollHeight,
-                        }}
-                        onClick={leaveFullscreen}
-                    >
+                        },
+                    }}
+                    transition={fullscreenTransition}
+                    onClick={closeFullscreen}
+                >
+                    {fullscreen.state === "closing" ||
+                    fullscreen.state === "opening" ? (
                         <motion.img
-                            ref={modalRef}
-                            onClick={(e) => e.stopPropagation()}
-                            onDoubleClick={leaveFullscreen}
+                            ref={transitionImg}
+                            // onClick={(e) => e.stopPropagation()}
+                            // onDoubleClick={modal.exit}
                             className="global-chart_image"
-                            src={map}
+                            src={visibleChart.data}
                             alt="global temperatures"
                             style={{ position: "absolute" }}
                             initial={fullscreen.from}
                             animate={fullscreen.to}
-                            exit={fullscreen.from}
+                            // exit={fullscreen.from}
                             transition={fullscreenTransition}
+                            onAnimationComplete={() => {
+                                if (fullscreen.state === "opening") {
+                                    setFullscreen({ state: "open" });
+                                } else {
+                                    setFullscreen({ state: "closed" });
+                                    clearAllBodyScrollLocks();
+                                }
+                            }}
                         />
-                    </motion.div>
-                )}
-            </AnimatePresence> */}
+                    ) : (
+                        <img
+                            className="global-chart_image--modal"
+                            alt="global temperature"
+                            src={visibleChart.data}
+                            onClick={(e) => {
+                                console.log(
+                                    modalImg.current.getBoundingClientRect()
+                                );
+                                e.stopPropagation();
+                            }}
+                            onDoubleClick={closeFullscreen}
+                            ref={modalImg}
+                        />
+                    )}
+                </motion.div>
+            )}
         </>
     );
 };

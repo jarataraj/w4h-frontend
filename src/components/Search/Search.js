@@ -24,7 +24,6 @@ const Search = ({ forecasts, newForecast, openCoverage }) => {
     );
     const addRecent = (latestLocation) => {
         // Add new recent to beginning of recents
-
         let newRecentLocations = [latestLocation].concat(
             recentLocations
                 // Remove any duplicate recents
@@ -50,7 +49,7 @@ const Search = ({ forecasts, newForecast, openCoverage }) => {
         if (message.slice(0, 16) === "No forecast for ") {
             message = (
                 <>
-                    {message + ". "}See{" "}
+                    {`${message}. See `}
                     <a
                         className="search-error-coverage-link"
                         href="https://duckduckgo.com"

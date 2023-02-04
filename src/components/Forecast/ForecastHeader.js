@@ -1,7 +1,8 @@
 import useIsNewlyMounted from "hooks/useIsNewlyMounted";
 import { BsPin, BsPinFill } from "react-icons/bs";
 import { IoMapOutline, IoMap } from "react-icons/io5";
-import ButtonSwitch from "./ButtonSwitch";
+import ButtonSwitch from "components/ButtonSwitch";
+import { useMediaQuery } from "@mui/material";
 
 const ForecastHeader = ({
     forecasts,
@@ -12,6 +13,9 @@ const ForecastHeader = ({
     newAlert,
 }) => {
     const isNewlyMounted = useIsNewlyMounted();
+    const useCompactKeyButton = useMediaQuery(
+        "@media screen and (max-width: 390px)"
+    );
     const pinForecast = () => {
         // unpinned will only ever be the first forecast
         setForecasts([
@@ -73,10 +77,17 @@ const ForecastHeader = ({
                 </button>
                 <ButtonSwitch
                     className="toggle-key"
-                    name={showKey ? "hide key" : "show key"}
+                    name={
+                        useCompactKeyButton
+                            ? "key"
+                            : showKey
+                            ? "hide key"
+                            : "show key"
+                    }
                     onClick={toggleShowKey}
                     animationDelay={isNewlyMounted ? 0 : 0.2}
                     animationDuration={isNewlyMounted ? 0 : 0.2}
+                    crossOut={useCompactKeyButton && showKey}
                 />
             </div>
         </div>

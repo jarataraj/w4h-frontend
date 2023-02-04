@@ -7,6 +7,8 @@
     background-color: var(--light-background-color);
     padding: 0;
     margin: 0;
+    /* create new stacking context, otherwise strange behavior */
+    z-index: 0;
 }
 .page-container {
     width: 100%;
@@ -15,6 +17,11 @@
 .hide-visually {
     position: absolute;
     left: -999em;
+}
+* {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
 }
 
 /* ====== Fonts ====== */
@@ -111,8 +118,11 @@ header {
 }
 
 /* |||||| Global Chart |||||| */
-
-.global-chart_container {
+/* ====== Standard View ====== */
+#root {
+    position: relative;
+}
+.global-chart-section2 {
     width: 100%;
     background-color: var(--dark-background-color);
     display: flex;
@@ -120,9 +130,7 @@ header {
     align-items: center;
     position: relative;
 }
-
-.global-chart_inset {
-    z-index: 1;
+.global-chart-section-background2 {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -132,83 +140,176 @@ header {
     border-color: var(--light-background-color);
     background-color: transparent;
 }
-
-.global-chart_image {
+.global-chart-image-container2 {
+    /* 950px image width - 2px image border */
+    width: min(1048px, calc(100% - 2px));
+    display: flex;
+    aspect-ratio: 2000/1008;
+    /* So that image animates over top of everything */
+    z-index: 100;
+    box-sizing: content-box;
+}
+.global-chart-image2 {
     border-radius: 6px 6px 0 0;
-    border-width: 1px 1px 0;
-    border-color: #333;
-    border-style: solid;
+    margin: -1px -1px 0;
+    box-sizing: content-box;
+    border: 1px solid black;
+    border-bottom-color: #333;
+    width: 100%;
+    aspect-ratio: 2000/1008;
+}
+.global-chart-image--fullscreen {
+    max-height: 100%;
+    aspect-ratio: 2000/1008;
     box-sizing: border-box;
-    z-index: 2;
-    /* width: min(900px, calc(100% + 2px)); */
-    width: min(952px, 100%);
-    aspect-ratio: 902/455;
-}
-@media screen and (max-width: 902px) {
-    .global-chart_image {
-        border-radius: 0;
-    }
-}
-@media screen and (max-width: 900px) {
-    .global-chart_image {
-        border-width: 1px 0 0;
-        aspect-ratio: 900/455;
-    }
 }
 
-.global-chart_image--modal {
-    flex-shrink: 1;
-    flex-grow: 1;
-    min-width: 0;
-    object-fit: contain;
-}
-.testDiv {
-    height: 100%;
+/* ====== Fullscreen View ====== */
+.global-chart-fullscreen-backdrop-filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: 100%;
+    backdrop-filter: brightness(0.5);
+    z-index: 99;
+    pointer-events: none;
 }
+.global-chart-fullscreen-container {
+    z-index: 100;
+    position: fixed;
+    margin: 0px;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: scroll;
+}
+.global-chart-controls--fullscreen-drawer {
+    width: min(100%, 1000px);
+}
+.global-chart-fullscreen-background {
+    /* border: solid 2px red; */
+    box-sizing: border-box;
+    z-index: 100;
+    position: fixed;
+    margin: 0px;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: scroll;
+    /* background-color: #000000099; */
+    /* backdrop-filter: blur(20px) brightness(0.5); */
+}
+
+/* OLD */
 
 /* ====== Global Chart Controls ====== */
 
-.global-chart_controls-container {
-    z-index: 2;
-    position: relative;
-    width: min(952px, 100%);
-    box-sizing: border-box;
-    background-color: var(--dark-background-color);
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    border-radius: 0 0 6px 6px;
-    padding: 2px 10px 3px;
-    /* experimental */
-    background-color: var(--global-chart-controls-background-color);
-    font-family: "ossr", sans-serif;
-}
-@media screen and (max-width: 902px) {
-    .global-chart_controls-container {
-        border-radius: 0;
+/* ------ date ------ */
+/* prevent collisions  with right controls */
+@media screen and (max-width: 700px) {
+    .global-chart-controls-date {
+        margin-right: 128px;
     }
 }
-
-/* ...... Time Controls ...... */
-.global-chart_time-controls {
+@media screen and (max-width: 390px) {
+    .global-chart-controls-date {
+        margin-right: 93px;
+    }
+}
+.global-chart-controls-date {
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 18px;
-    width: min(100%, 13.3rem);
+    width: 330px;
+    padding: 0 1.5em;
 }
-.global-chart_time-controls > h4 {
+.global-chart-controls-date--left {
+    width: 220px;
+    padding: 0 8px;
+}
+.global-chart-title {
+    display: flex;
     color: #eaeaea;
-    font-family: "ossr";
+    font-family: "ossl";
     font-weight: 300;
 }
-
+.global-chart-title-divider {
+    width: 2em;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 1;
+}
 .change-day {
     color: #fff;
     font-size: 20px;
     display: flex;
     position: relative;
+}
+.global-chart-title-divider {
+    color: #777;
+}
+.global-chart-displayed-date {
+    width: 6em;
+    text-align: center;
+}
+/* ------ right ------ */
+.global-chart-controls-right {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+}
+.global-chart-controls-right > button {
+    color: #eee;
+    font-size: 22px;
+    margin: 0 2px;
+    display: flex;
+    align-items: center;
+}
+.global-chart-controls-right .global-chart-toggle-key {
+    height: 19px;
+    border: solid 1px #999;
+    font-size: 14px;
+}
+.global-chart-toggle-key {
+    font-family: "ossl";
+    font-weight: 300;
+    border-radius: 5px;
+    width: 70px;
+}
+@media screen and (max-width: 390px) {
+    .global-chart-toggle-key {
+        width: 35px;
+    }
+}
+.global-chart-toggle-key line {
+    stroke: #ddd;
+    /* stroke: rgb(202, 100, 100); */
+    stroke-width: 1px;
+}
+
+.global-chart-data-selection {
+    display: flex;
+    align-items: center;
+}
+
+/* ...... Data Selection ...... */
+.global-chart-data-selection {
+    color: #eaeaea;
+    font-family: "ossr";
+    font-weight: 300;
+    font-size: 18px;
 }
 /* ...... Text Radio Controls ...... */
 .text-radio-dimensioner {
@@ -570,6 +671,16 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .toggle-key {
     width: 90px;
+}
+@media screen and (max-width: 390px) {
+    .toggle-key {
+        width: 42px;
+    }
+}
+.toggle-key line {
+    /* stroke: rgb(128, 14, 14); */
+    stroke: black;
+    stroke-width: 1px;
 }
 
 /* ====== Alerts ====== */
@@ -1121,10 +1232,10 @@ footer {
     color: #fff;
     flex-wrap: wrap;
 }
-.footer-links-container > button {
+.footer-link {
     color: #fff;
 }
-.footer-links-container > button:hover {
+.footer-link:hover {
     transform: scale(1.03);
     text-decoration: underline;
 }

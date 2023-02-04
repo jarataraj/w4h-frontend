@@ -1,0 +1,20 @@
+.global-chart-vertical-key-container {
+    z-index: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    /* margin-left: -6px; */
+    /* border-radius: 0 6px 6px 0; */
+    border-radius: 6px;
+    margin-left: 3px;
+    border: 1px solid black;
+    overflow: hidden;
+    width: 80px;
+}
+
+.global-chart-vertical-key {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

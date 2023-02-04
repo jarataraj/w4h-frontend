@@ -1,0 +1,16 @@
+.global-chart-compact-key-container {
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    z-index: 0;
+    position: relative;
+}
+.global-chart-compact-key {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+.global-chart-compact-key-column {
+    flex-grow: 1;
+}

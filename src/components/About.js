@@ -5,11 +5,11 @@ const About = () => {
             <div className="about-row">
                 <div className="about-section">
                     <h2 className="about-section-header">
-                        What are WBGT and UTCI?
+                        What are UTCI and WBGT?
                     </h2>
                     <p className="about-paragraph">
-                        Wet Bulb Globe Temperature (WBGT) and Universal Thermal
-                        Climate Index (UTCI) are{" "}
+                        Universal Thermal Climate Index (UTCI) and Wet Bulb
+                        Globe Temperature (WBGT) are{" "}
                         <span className="extra-bold">
                             thermal stress indexes
                         </span>{" "}
@@ -21,7 +21,7 @@ const About = () => {
                 </div>
                 <div className="about-section">
                     <h2 className="about-section-header">
-                        Why use WBGT and UTCI?
+                        Why use UTCI and WBGT?
                     </h2>
                     <p className="about-paragraph">
                         Both consider the effects of temperature, sunlight,
@@ -56,13 +56,13 @@ const About = () => {
                 </div>
                 <div className="about-section">
                     <h2 className="about-section-header">
-                        Why are WBGT and UTCI forecasts hard to find?
+                        Why are UTCI and WBGT forecasts hard to find?
                     </h2>
                     <p className="about-paragraph">
                         The meteorological measurements required for calculating
-                        WBGT and UTCI are not easily available and often require
+                        UTCI and WBGT are not easily available and often require
                         expensive equipment. However, there are algorithms that
-                        closely approximate WBGT and UTCI using standard outputs
+                        closely approximate UTCI and WBGT using standard outputs
                         from global weather forecasting models. These algorithms
                         are how Weather for Humans determines forecasts.
                     </p>
@@ -72,8 +72,8 @@ const About = () => {
                 <div className="about-section">
                     <h2 className="about-section-header">Limitations</h2>
                     <p className="about-paragraph">
-                        Every person's body is different, and neither WBGT,
-                        UTCI, nor any other weather-derived thermal index can
+                        Every person's body is different, and neither UTCI,
+                        WBGT, nor any other weather-derived thermal index can
                         account for human factors such as activity level and
                         clothing insulation. Instead, they are modeled based on
                         average human characteristics.

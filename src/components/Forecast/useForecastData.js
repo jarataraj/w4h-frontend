@@ -37,10 +37,13 @@ const processRawForecastData = (data, units, thermalIndex, locale) => {
         units === "C" ? CELCIUS_CONFIG : FARENHEIGHT_CONFIG;
 
     // Add gridline to above or below major gridlines for Farenheight for
-    // better visual formating
+    // better visual formating (most importantly, adds whitespace around
+    // major gridline label)
+    console.log("min temp: ", Math.min(...temps));
+    console.log("floored: ", floor(Math.min(...temps), gridlineSpacing));
     let chartMinGridline = floor(Math.min(...temps), gridlineSpacing);
     if (isMultipleOf(majorGridFactor, chartMinGridline) && units === "F")
-        chartMinGridline += gridlineSpacing;
+        chartMinGridline -= gridlineSpacing;
     let chartMaxGridline = ceiling(Math.max(...temps), gridlineSpacing);
     if (isMultipleOf(majorGridFactor, chartMaxGridline) && units === "F")
         chartMaxGridline += gridlineSpacing;

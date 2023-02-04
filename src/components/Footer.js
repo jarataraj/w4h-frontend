@@ -31,15 +31,13 @@ const Footer = ({ openCoverage }) => {
             </AnimatePresence>
             <ColorBar className="footer-color-bar" />
             <div className="footer-links-container">
-                <button className="show-coverage-map" onClick={toggleContact}>
+                <button className="footer-link" onClick={toggleContact}>
                     contact
                 </button>
                 <span>&emsp;|&emsp;</span>
-                <button className="show-coverage-map">
-                    additional options
-                </button>
+                <button className="footer-link">additional options</button>
                 <span>&emsp;|&emsp;</span>
-                <button className="show-coverage-map" onClick={openCoverage}>
+                <button className="footer-link" onClick={openCoverage}>
                     coverage map
                 </button>
             </div>
