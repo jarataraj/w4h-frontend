@@ -27,14 +27,17 @@ const utciCategoryNames = [
 const utciCategoryBoundaries = [-40, -27, -13, 0, 9, 26, 32, 38, 46];
 
 const wbgtMilitaryColors = [
-    "#f7f5f7",
+    // "#f7f5f7",
+    // "#efedf0",
+    // "#eceaed",
+    "#ebebeb",
     "#cceecc",
     "#ffe69b",
     "#ff8080",
     "#ababab",
 ];
 const wbgtNiceColors = utciColors.slice(5);
-const wbgtColors = wbgtNiceColors;
+const wbgtColors = wbgtMilitaryColors;
 const wbgtCategoryNames = [
     "low risk",
     "elevated risk",

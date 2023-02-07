@@ -916,7 +916,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .x-labels-container--min,
 .x-labels-container--max {
     transform: translateY(-2px);
-    padding: 0px 3px 1px;
+    padding: 0px 1px 1px;
 }
 .x-labels-container--min {
     border: 2px solid var(--low-temp);

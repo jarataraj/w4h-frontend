@@ -34,8 +34,8 @@ const Footer = ({ openCoverage }) => {
                 <button className="footer-link" onClick={toggleContact}>
                     contact
                 </button>
-                <span>&emsp;|&emsp;</span>
-                <button className="footer-link">additional options</button>
+                {/* <span>&emsp;|&emsp;</span>
+                <button className="footer-link">additional options</button> */}
                 <span>&emsp;|&emsp;</span>
                 <button className="footer-link" onClick={openCoverage}>
                     coverage map

@@ -42,6 +42,16 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
     const [day, setDay] = useState(
         new Date(new Date(Date.now()).setFullYear(2022, 10, 17))
     );
+
+    let today = useRef(new Date());
+    today.current.setUTCHours(0);
+    today.current.setUTCMinutes(0);
+    today.current.setUTCMilliseconds(0);
+
+    const testingOffset =
+        today.current.valueOf() - Date.parse("November 17 2022 00:00:00 GMT");
+    console.log(testingOffset);
+
     const dateString = new Intl.DateTimeFormat(locale, {
         weekday: "short",
         month: "numeric",
@@ -54,6 +64,12 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
         setDay(newDay);
     };
 
+    const datestring = (offset = 0) => {
+        let date = new Date(day.valueOf());
+        date.setDate(date.getDate() + offset);
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    };
+
     // const [day, setDay] = useState(new Date(Date.now()));
     // NEW
     // const [fullscreen, toggleFullscreen] = useBinaryState();
@@ -63,11 +79,6 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
     const [highLow, setHighLow] = useState("Highs");
 
     // const isFullscreen = fullscreen.state !== "closed";
-    const datestring = (offset = 0) => {
-        let date = new Date(day.valueOf());
-        date.setDate(date.getDate() + offset);
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    };
     const highLowString = highLow.toLowerCase();
     const visibleChart = useChart(datestring(), highLowString, true);
     const nextChart = useChart(
@@ -136,11 +147,6 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
     //     return () => clearAllBodyScrollLocks();
     // }, []);
 
-    let today = useRef(new Date());
-    today.current.setUTCHours(0);
-    today.current.setUTCMinutes(0);
-    today.current.setUTCMilliseconds(0);
-
     const useVerticalKey = useMediaQuery(
         "@media screen and (min-width: 1144px)"
     );
@@ -194,6 +200,7 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
                         dateString={dateString}
                         changeDay={changeDay}
                         isFullscreenControls={false}
+                        setHighLow={setHighLow}
                     />
                     <HorizontalKey showKey={showKey && useHorizontalKey} />
                     <CompactKey showKey={showKey && useCompactKey} />

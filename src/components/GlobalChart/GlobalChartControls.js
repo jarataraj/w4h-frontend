@@ -33,6 +33,7 @@ const GlobalChartControls = ({
     dateString,
     changeDay,
     isFullscreenControls,
+    setHighLow,
 }) => {
     const [showDataSelectors, setShowDataSelectors] = useState(false);
     const isNewlyMounted = useIsNewlyMounted();
@@ -44,7 +45,7 @@ const GlobalChartControls = ({
     );
     return (
         <>
-            <div className={`global-chart-controls-container ${className}`}>
+            <div className={`global-chart-controls-container-test`}>
                 <AnimatePresence>
                     {!fullscreen && showDataSelectors && (
                         <motion.div
@@ -56,78 +57,103 @@ const GlobalChartControls = ({
                             onClick={() => setShowDataSelectors(false)}
                         >
                             <div className="global-chart-data-selection-container">
-                                <button>UTCI Highs</button>
-                                <button>UTCI Lows</button>
-                                <button>WBGt Highs</button>
+                                <button onClick={() => setHighLow("Highs")}>
+                                    UTCI Highs
+                                </button>
+                                <button onClick={() => setHighLow("Lows")}>
+                                    UTCI Lows
+                                </button>
                             </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
-                <div
-                    className={`global-chart-controls-date ${
-                        useCompactTitle
-                            ? "global-chart-controls-date--left"
-                            : ""
-                    }`}
-                >
-                    <button
-                        className="change-day change-day--previous"
-                        disabled={previousChart.data ? false : true}
-                        onClick={() => changeDay(-1)}
+                {/* <AnimatePresence>
+                    {!showDataSelectors && (
+                        <motion.div
+                            className="global-chart-controls-tray"
+                            initial={{ height: 0 }}
+                            animate={{ height: "100%" }}
+                            exit={{ height: 0 }}
+                            transition={{ duration: 0.4, type: "tween" }}
+                        > */}
+                <div className={`global-chart-controls-container ${className}`}>
+                    <div
+                        className={`global-chart-controls-date ${
+                            useCompactTitle
+                                ? "global-chart-controls-date--left"
+                                : ""
+                        }`}
                     >
-                        <BsCaretLeft className="change-day_icon" />
-                        <BsCaretLeftFill className="change-day_icon--hover" />
-                    </button>
-                    {useCompactTitle ? (
-                        <h4 className="global-chart-title">
-                            {dateString.match(/\d+\/\d+/)[0]}
-                            &ensp;UTCI&ensp;Highs
-                        </h4>
-                    ) : (
-                        <div className="global-chart-title">
-                            <h4>UTCI&ensp;Highs</h4>
-                            <div className="global-chart-title-divider">|</div>
-                            <h4>{dateString.replace(",", "")}</h4>
-                        </div>
-                    )}
-                    <button
-                        className="change-day change-day--next"
-                        disabled={nextChart.data ? false : true}
-                        onClick={() => changeDay(1)}
-                    >
-                        <BsCaretRight className="change-day_icon" />
-                        <BsCaretRightFill className="change-day_icon--hover" />
-                    </button>
-                </div>
+                        <button
+                            className="change-day change-day--previous"
+                            disabled={previousChart.data ? false : true}
+                            onClick={() => changeDay(-1)}
+                        >
+                            <BsCaretLeft className="change-day_icon" />
+                            <BsCaretLeftFill className="change-day_icon--hover" />
+                        </button>
+                        {useCompactTitle ? (
+                            <h4 className="global-chart-title">
+                                {dateString.match(/\d+\/\d+/)[0]}
+                                &ensp;UTCI&ensp;Highs
+                            </h4>
+                        ) : (
+                            <div className="global-chart-title">
+                                <h4>UTCI&ensp;Highs</h4>
+                                <div className="global-chart-title-divider">
+                                    |
+                                </div>
+                                <h4>{dateString.replace(",", "")}</h4>
+                            </div>
+                        )}
+                        <button
+                            className="change-day change-day--next"
+                            disabled={nextChart.data ? false : true}
+                            onClick={() => changeDay(1)}
+                        >
+                            <BsCaretRight className="change-day_icon" />
+                            <BsCaretRightFill className="change-day_icon--hover" />
+                        </button>
+                    </div>
 
-                <div className="global-chart-controls-right">
-                    <ButtonSwitch
-                        className="global-chart-toggle-key"
-                        onClick={toggleShowKey}
-                        name={
-                            useCompactKeyButton
-                                ? "key"
-                                : showKey
-                                ? "hide key"
-                                : "show key"
-                        }
-                        animationDelay={isNewlyMounted ? 0 : 0.2}
-                        animationDuration={isNewlyMounted ? 0 : 0.2}
-                        crossOut={useCompactKeyButton && showKey}
-                    />
-                    <button
-                        className="global-chart-fullscreen-button"
-                        onClick={() => setShowDataSelectors(!showDataSelectors)}
-                    >
-                        <IoSettingsOutline />
-                    </button>
-                    <button
-                        className="global-chart-fullscreen-button"
-                        onClick={toggleFullscreen}
-                    >
-                        {isFullscreenControls ? <IoContract /> : <IoExpand />}
-                    </button>
+                    <div className="global-chart-controls-right">
+                        <ButtonSwitch
+                            className="global-chart-toggle-key"
+                            onClick={toggleShowKey}
+                            name={
+                                useCompactKeyButton
+                                    ? "key"
+                                    : showKey
+                                    ? "hide key"
+                                    : "show key"
+                            }
+                            animationDelay={isNewlyMounted ? 0 : 0.2}
+                            animationDuration={isNewlyMounted ? 0 : 0.2}
+                            crossOut={useCompactKeyButton && showKey}
+                        />
+                        <button
+                            className="global-chart-fullscreen-button"
+                            onClick={() =>
+                                setShowDataSelectors(!showDataSelectors)
+                            }
+                        >
+                            <IoSettingsOutline />
+                        </button>
+                        <button
+                            className="global-chart-fullscreen-button"
+                            onClick={toggleFullscreen}
+                        >
+                            {isFullscreenControls ? (
+                                <IoContract />
+                            ) : (
+                                <IoExpand />
+                            )}
+                        </button>
+                    </div>
                 </div>
+                {/* </motion.div>
+                    )}
+                </AnimatePresence> */}
             </div>
         </>
     );
