@@ -64,15 +64,17 @@ button {
     padding: 0;
     margin: 0;
 }
-button:hover,
-.text-radio {
-    cursor: pointer;
+@media (hover: hover) {
+    button:hover,
+    .text-radio {
+        cursor: pointer;
+    }
+    button:disabled:hover {
+        cursor: default;
+    }
 }
 input[type="radio"] {
     border: 1px solid red;
-}
-button:disabled:hover {
-    cursor: default;
 }
 a {
     color: inherit;
@@ -186,7 +188,6 @@ header {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    overflow: scroll;
 }
 .global-chart-controls--fullscreen-drawer {
     width: min(100%, 1000px);
@@ -326,24 +327,28 @@ header {
     background-color: var(--global-chart-controls-background-color);
     /* transform: scale(1.2); */
 }
-.change-day:hover .change-day_icon--hover {
-    display: block;
-}
-.change-day:hover .change-day_icon {
-    display: none;
+@media (hover: hover) {
+    .change-day:hover .change-day_icon--hover {
+        display: block;
+    }
+    .change-day:hover .change-day_icon {
+        display: none;
+    }
 }
 /* ...... When disabled ...... */
 .change-day:disabled {
     color: #666;
 }
-.change-day:disabled:hover {
-    transform: none;
-}
-.change-day:disabled:hover .change-day_icon--hover {
-    display: none;
-}
-.change-day:disabled:hover .change-day_icon {
-    display: block;
+@media (hover: hover) {
+    .change-day:disabled:hover {
+        transform: none;
+    }
+    .change-day:disabled:hover .change-day_icon--hover {
+        display: none;
+    }
+    .change-day:disabled:hover .change-day_icon {
+        display: block;
+    }
 }
 
 .global-chart_fullscreen-button {
@@ -353,10 +358,12 @@ header {
     font-size: 22px;
     color: #fff;
 }
-.global-chart_fullscreen-button:hover {
-    font-size: 24px;
-    top: 0;
-    right: 2px;
+@media (hover: hover) {
+    .global-chart_fullscreen-button:hover {
+        font-size: 24px;
+        top: 0;
+        right: 2px;
+    }
 }
 
 /* .text-radio-label {
@@ -418,9 +425,11 @@ header {
     color: #222;
     font-size: 1.5rem;
 }
-.clear-search:hover {
-    font-size: 1.7rem;
-    right: 0.2rem;
+@media (hover: hover) {
+    .clear-search:hover {
+        font-size: 1.7rem;
+        right: 0.2rem;
+    }
 }
 .search-container-background {
     z-index: -1;
@@ -458,9 +467,11 @@ header {
     text-decoration-thickness: 2px;
     text-decoration-color: #ccc;
 }
-.recent-locations a:hover {
-    text-decoration-color: #c90054;
-    color: #000;
+@media (hover: hover) {
+    .recent-locations a:hover {
+        text-decoration-color: #c90054;
+        color: #000;
+    }
 }
 
 /* ...... Current Location ...... */
@@ -488,12 +499,14 @@ header {
 .current-location-loader {
     margin: 1px;
 }
-.current-location:hover {
-    color: #a80046;
-    border-radius: 1rem;
-}
-.current-location:hover > svg {
-    color: #c90054;
+@media (hover: hover) {
+    .current-location:hover {
+        color: #a80046;
+        border-radius: 1rem;
+    }
+    .current-location:hover > svg {
+        color: #c90054;
+    }
 }
 /* ...... Search Errors ...... */
 .search-error-veil {
@@ -526,10 +539,12 @@ header {
     display: inline;
     text-decoration-color: #555;
 }
-.search-error-coverage-link:hover {
-    color: #000;
-    text-decoration-thickness: 2px;
-    text-decoration-color: #000;
+@media (hover: hover) {
+    .search-error-coverage-link:hover {
+        color: #000;
+        text-decoration-thickness: 2px;
+        text-decoration-color: #000;
+    }
 }
 .close-error {
     display: flex;
@@ -537,8 +552,10 @@ header {
     font-size: 24px;
     color: #333;
 }
-.close-error:hover {
-    color: #000;
+@media (hover: hover) {
+    .close-error:hover {
+        color: #000;
+    }
 }
 /* ------ Override Defaults ------ */
 /* clears the ‘X’ from Internet Explorer */
@@ -642,31 +659,35 @@ input[type="search"]::-webkit-search-results-decoration {
     color: #7b7c96;
     display: none;
 }
-.pin-button:hover .pin-icon--hovered {
-    display: inline;
-}
-.pin-button:hover .pin-icon {
-    display: none;
-}
-.pin-button:hover .pinned-icon--hovered {
-    display: inline;
-}
-.pin-button:hover .pinned-icon {
-    display: none;
+@media (hover: hover) {
+    .pin-button:hover .pin-icon--hovered {
+        display: inline;
+    }
+    .pin-button:hover .pin-icon {
+        display: none;
+    }
+    .pin-button:hover .pinned-icon--hovered {
+        display: inline;
+    }
+    .pin-button:hover .pinned-icon {
+        display: none;
+    }
 }
 .map-button {
     font-size: 22px;
     margin: 0 6px 0 4px;
 }
-.map-button:hover .map-icon {
-    display: none;
-}
 .map-icon--hovered {
     display: none;
     color: rgb(80, 81, 109);
 }
-.map-button:hover .map-icon--hovered {
-    display: inline;
+@media (hover: hover) {
+    .map-button:hover .map-icon {
+        display: none;
+    }
+    .map-button:hover .map-icon--hovered {
+        display: inline;
+    }
 }
 .toggle-key {
     width: 90px;
@@ -961,15 +982,17 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* ......Hover Effects...... */
 
-.forecast-days:hover .forecast-day:not(:hover) .forecast-day-filter.daily {
-    /* ^ container hovered, days not hovered, only when daily */
-    /* backdrop-filter: brightness(0.94); */
-    backdrop-filter: brightness(0.85);
-}
-.forecast-days:hover .forecast-day:hover .forecast-day-filter.daily {
-    /* ^ container hovered, day hovered, only when daily */
-    /* backdrop-filter: brightness(1.02); */
-    backdrop-filter: brightness(1.03);
+@media (hover: hover) {
+    .forecast-days:hover .forecast-day:not(:hover) .forecast-day-filter.daily {
+        /* ^ container hovered, days not hovered, only when daily */
+        /* backdrop-filter: brightness(0.94); */
+        backdrop-filter: brightness(0.85);
+    }
+    .forecast-days:hover .forecast-day:hover .forecast-day-filter.daily {
+        /* ^ container hovered, day hovered, only when daily */
+        /* backdrop-filter: brightness(1.02); */
+        backdrop-filter: brightness(1.03);
+    }
 }
 
 /* ------ Scrollbar ------ */
@@ -994,10 +1017,12 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* ...... Hover and Active Effects ...... */
 /* When hovered */
-.forecast-chart-container .os-scrollbar:hover .os-scrollbar-handle {
-    height: 9px;
-    bottom: 3px;
-    border: 2px solid #888;
+@media (hover: hover) {
+    .forecast-chart-container .os-scrollbar:hover .os-scrollbar-handle {
+        height: 9px;
+        bottom: 3px;
+        border: 2px solid #888;
+    }
 }
 /* When active */
 .forecast-chart-container .os-scrollbar-handle.active {
@@ -1084,11 +1109,13 @@ input[type="search"]::-webkit-search-results-decoration {
     border-radius: 6px;
     border: 1px solid #222;
 }
-.button-switch:hover {
-    /* outline: 1px solid #999; */
-    color: white;
-    background-color: rgb(103, 105, 140);
-    /* border-color: #e41c6f; */
+@media (hover: hover) {
+    .button-switch:hover {
+        /* outline: 1px solid #999; */
+        color: white;
+        background-color: rgb(103, 105, 140);
+        /* border-color: #e41c6f; */
+    }
 }
 .button-switch-label {
     position: absolute;
@@ -1215,10 +1242,12 @@ footer {
     margin: 0;
     color: #555;
 }
-.close-contact-info:hover {
-    color: #222;
-    margin: -2px;
-    font-size: 28px;
+@media (hover: hover) {
+    .close-contact-info:hover {
+        color: #222;
+        margin: -2px;
+        font-size: 28px;
+    }
 }
 
 .footer-links-container {
@@ -1234,9 +1263,11 @@ footer {
 .footer-link {
     color: #fff;
 }
-.footer-link:hover {
-    transform: scale(1.03);
-    text-decoration: underline;
+@media (hover: hover) {
+    .footer-link:hover {
+        transform: scale(1.03);
+        text-decoration: underline;
+    }
 }
 
 .coverage-map {
@@ -1355,9 +1386,11 @@ h4 {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-.plain-button:hover {
-    color: #bb054b;
-    border-radius: 1rem;
+@media (hover: hover) {
+    .plain-button:hover {
+        color: #bb054b;
+        border-radius: 1rem;
+    }
 }
 
 form {

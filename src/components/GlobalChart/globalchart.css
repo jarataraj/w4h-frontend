@@ -86,7 +86,7 @@
 }
 
 .global-chart-fullscreen-image-container {
-    overflow-x: scroll;
+    overflow-x: auto;
     height: 100vh;
     display: flex;
     align-items: center;
