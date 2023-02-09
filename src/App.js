@@ -78,13 +78,21 @@ function App() {
             <AppNewlyMountedContext.Provider value={appIsNewlyMounted}>
                 <motion.div
                     className="global-chart-fullscreen-backdrop-filter"
+                    initial={{
+                        backdropFilter: "blur(0px) brightness(1)",
+                        // "-webkit-backdrop-filter": "blur(0) brightness(1)",
+                    }}
                     animate={
                         globalChartFullscreen
                             ? {
                                   backdropFilter: "blur(4px) brightness(0)",
+                                  //   "-webkit-backdrop-filter":
+                                  //       "blur(4px) brightness(0)",
                               }
                             : {
                                   backdropFilter: "blur(0px) brightness(1)",
+                                  //   "-webkit-backdrop-filter":
+                                  //       "blur(0) brightness(1)",
                               }
                     }
                     transition={{ duration: 0.5 }}
