@@ -2,7 +2,6 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import decodeForecastData from "utils/decodeForecastData";
 import decodeRawForecastData from "utils/decodeRawForecastData";
-// const baseUrl = "/api/forecast";
 
 const forecasts = axios.create({
     baseURL: "/api/forecast",

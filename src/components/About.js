@@ -8,15 +8,17 @@ const About = () => {
                         What are UTCI and WBGT?
                     </h2>
                     <p className="about-paragraph">
-                        Universal Thermal Climate Index (UTCI) and Wet Bulb
-                        Globe Temperature (WBGT) are{" "}
+                        UTCI and WBGT are two of the best available measurements
+                        of{" "}
+                        <span className="extra-bold">apparent temperature</span>{" "}
+                        - how hot or cold you will <em>feel</em> given the
+                        temperature, sunlight, wind, and humidity of your
+                        surroundings. They were created for use as{" "}
                         <span className="extra-bold">
                             thermal stress indexes
                         </span>{" "}
-                        - numbers that describe the risk of thermal stress. They
-                        can also be used as measurements of apparent
-                        temperature, helping you predict how you will{" "}
-                        <em>feel</em>.
+                        - numbers that describe the risk of experiencing heat or
+                        cold stress in an environment.
                     </p>
                 </div>
                 <div className="about-section">

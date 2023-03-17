@@ -9,6 +9,7 @@ import { useResizeObserver, useScrollIntoView } from "@mantine/hooks";
 import { AppNewlyMountedContext } from "App";
 
 // Charting
+import { DateTime } from "luxon";
 import { scaleLinear, scaleTime } from "@visx/scale";
 
 // Animation
@@ -38,6 +39,7 @@ import useOverlayScrollbarsHorizontalScroll from "hooks/useOverlayScrollbarsHori
 import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
 import useForecastData from "./useForecastData";
 import useBinaryState from "hooks/useBinaryState";
+import usePrevious from "hooks/usePrevious";
 
 const Forecast = ({
     forecasts,
@@ -50,6 +52,7 @@ const Forecast = ({
     data,
 }) => {
     // ====== State  ======
+    const previousLocation = usePrevious(location.name);
     const appIsNewlyMounted = useContext(AppNewlyMountedContext);
     const scrollContainer = useRef(null);
     const [showKey, toggleShowKey] = useBinaryState([false, true]);
@@ -67,6 +70,9 @@ const Forecast = ({
         useResizeObserver();
 
     // |||||| CHARTING ||||||
+    const earliestForecastTime = DateTime.now()
+        .setZone(location.timeZone)
+        .startOf("day");
     // ====== Data ======
     let {
         times,
@@ -80,7 +86,13 @@ const Forecast = ({
         chartMinTemp,
         chartMaxTemp,
         categories,
-    } = useForecastData(data, units, thermalIndex);
+    } = useForecastData(
+        data,
+        units,
+        thermalIndex,
+        earliestForecastTime,
+        location.timeZone
+    );
 
     // ====== Layout and Scale ======
     // ------ Layout ------
@@ -129,6 +141,11 @@ const Forecast = ({
 
     // |||||| ANIMATION ||||||
     // ====== Animation State ======
+
+    // NOTE: why use animatedDataWidth instead of motionWidth directly?
+    // setAnimatedWidth triggers rerender, which causes scrollTo to happen
+    // at the same time. Also allows for using rounded values to lessen
+    // pixel-rounding jitter
     const [animatedDataWidth, setAnimatedWidth] = useState(dailyXwidth);
     const sizeToPosition = useRef(null);
     // Use framer-motion "motion value" so that state can use a getter
@@ -228,7 +245,7 @@ const Forecast = ({
     // useHorizontalScroll(chartMiddleViewport);
     // ^ Janky in Chrome, better animation than useOverlayScrollbarsHorizontalScroll in Firefox
     useOverlayScrollbarsHorizontalScroll(scrollContainer);
-    useVisibleOnlyInViewport(chartMiddleViewport, ".day-label");
+    useVisibleOnlyInViewport(chartMiddleViewport, ".day-label", location.name);
     const { scrollIntoView, targetRef } = useScrollIntoView({
         duration: 800,
         cancelable: true,
@@ -238,6 +255,28 @@ const Forecast = ({
             scrollIntoView({ alignment: "center" });
         }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // When forecast location changes, change width of chart middle viewport according to new data
+    console.log("Previous: ", previousLocation, "; Current: ", location.name);
+    console.log(previousLocation && previousLocation !== location.name);
+    // if (previousLocation && previousLocation !== location.name) {
+    //     if (forecastTimescale === "daily") {
+    //         console.log("setting to daily width");
+    //         setAnimatedWidth(dailyXwidth);
+    //     } else {
+    //         console.log("setting to hourly width");
+    //         setAnimatedWidth(hourlyXwidth);
+    //     }
+    // }
+    useLayoutEffect(() => {
+        if (forecastTimescale === "daily") {
+            console.log("setting to daily width");
+            setAnimatedWidth(dailyXwidth);
+        } else {
+            console.log("setting to hourly width");
+            setAnimatedWidth(hourlyXwidth);
+        }
+    }, [dailyXwidth, hourlyXwidth]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <>
@@ -265,7 +304,10 @@ const Forecast = ({
                     className="forecast-container"
                     ref={targetRef}
                     key="static"
-                    style={{ width: forecastWidth, maxWidth: forecastMaxWidth }}
+                    style={{
+                        width: forecastWidth,
+                        maxWidth: forecastMaxWidth,
+                    }}
                 >
                     <ForecastHeader
                         forecasts={forecasts}
@@ -378,6 +420,7 @@ const Forecast = ({
                                     tempScale={tempScale}
                                 />
                                 <Xticks
+                                    location={location.name}
                                     forecastTimescale={forecastTimescale}
                                     chartHeight={chartHeight}
                                     bottomPad={bottomPad}
@@ -387,6 +430,7 @@ const Forecast = ({
                                     chartMiddleViewport={chartMiddleViewport}
                                 />
                                 <Days
+                                    location={location.name}
                                     dataWidth={animatedDataWidth}
                                     chartHeight={chartHeight}
                                     scrollbarBuffer={scrollbarBuffer}

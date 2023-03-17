@@ -5,6 +5,7 @@ import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
 import useRemoveIfOverflowsAncestor from "hooks/useRemoveIfOverflowsAncestor";
 
 const Xticks = ({
+    location,
     forecastTimescale,
     chartHeight,
     bottomPad,
@@ -20,8 +21,17 @@ const Xticks = ({
     const xTicksContainer = useRef(null);
     const firstTime = useRef(null);
     const lastTime = useRef(null);
-    useRemoveIfOverflowsAncestor(firstTime, xTicksContainer, forecastTimescale);
-    useRemoveIfOverflowsAncestor(lastTime, xTicksContainer, forecastTimescale);
+    // Effect dependencies include location (really location.name as simple
+    // identifier) so that effects take place when chart data changes due
+    // to changing location)
+    useRemoveIfOverflowsAncestor(firstTime, xTicksContainer, [
+        forecastTimescale,
+        location,
+    ]);
+    useRemoveIfOverflowsAncestor(lastTime, xTicksContainer, [
+        forecastTimescale,
+        location,
+    ]);
     // ------
 
     useAncestorVisibleOnlyInViewport(
@@ -30,12 +40,12 @@ const Xticks = ({
         chartMiddleViewport,
         ".x-tick-hitbox",
         ".x-tick",
-        forecastTimescale
+        [forecastTimescale, location]
     );
     useVisibleOnlyInViewport(
         chartMiddleViewport,
         ".x-label--min, .x-label--max",
-        forecastTimescale
+        [forecastTimescale, location]
     );
 
     return (
@@ -63,7 +73,7 @@ const Xticks = ({
                                         }`}
                                     >
                                         <div className="x-label x-label--time">
-                                            {((time.getHours() + 11) % 12) + 1}
+                                            {((time.hour + 11) % 12) + 1}
                                         </div>
                                         <div className="x-label x-label--temp">
                                             {Math.round(temp)}
@@ -83,13 +93,7 @@ const Xticks = ({
                     {Array.from(timeData.values())
                         .slice(1, -1)
                         .filter(({ time }) => {
-                            let hour = time.getHours();
-                            return (
-                                hour === 0 ||
-                                hour === 6 ||
-                                hour === 12 ||
-                                hour === 18
-                            );
+                            return [0, 6, 12, 18].includes(time.hour);
                         })
                         .map(({ time, position }, i, array) => {
                             return (
@@ -111,8 +115,9 @@ const Xticks = ({
                                                 : undefined
                                         }
                                     >
-                                        {`${((time.getHours() + 11) % 12) + 1}${
-                                            time.getHours() < 12 ? "a" : "p"
+                                        {/* TODO: fix formatting to locale time (24 vs 12 hr clock) */}
+                                        {`${((time.hour + 11) % 12) + 1}${
+                                            time.hour < 12 ? "a" : "p"
                                         }`}
                                     </div>
                                 </div>
@@ -124,11 +129,12 @@ const Xticks = ({
             {forecastTimescale === "daily" && (
                 <div className="x-ticks x-ticks--min-max">
                     {days
+                        // filter for days that have a min (and by extension, a max)
                         .filter((day) => day.min)
                         .map((day) => {
                             return (
                                 <div
-                                    key={`min-max-x-tick-${day.start.getDate()}`}
+                                    key={`min-max-x-tick-${day.start.toISODate()}`}
                                     className="min-max-labels-container"
                                     style={{
                                         top: yMax + 24.6,

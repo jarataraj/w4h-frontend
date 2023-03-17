@@ -15,22 +15,28 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
-import Header from "./components/Header";
-import Search from "./components/Search";
-import About from "./components/About";
 import ColorBar from "./components/ColorBar";
-import StaticModal from "./components/StaticModal";
+import Header from "./components/Header";
 import GlobalChart from "./components/GlobalChart";
+import Search from "./components/Search";
 import Forecast from "./components/Forecast";
+import About from "./components/About";
+import StaticModal from "./components/StaticModal";
+import Footer from "components/Footer";
 
 import coverage from "./assets/images/Coverage_MillerCropped_Pattern.png";
-import Footer from "components/Footer";
 import useIsNewlyMounted from "hooks/useIsNewlyMounted";
+import useStatus from "services/status";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { DateTime } from "luxon";
 
 export const AppNewlyMountedContext = createContext();
 
 function App() {
+    const queryClient = useQueryClient();
     // ====== State ======
+    const status = useStatus();
     const appIsNewlyMounted = useIsNewlyMounted(800);
     const [globalChartFullscreen, toggleGlobalChartFullscreen] =
         useBinaryState();
@@ -76,6 +82,21 @@ function App() {
     return (
         <>
             <AppNewlyMountedContext.Provider value={appIsNewlyMounted}>
+                <button
+                    onClick={() =>
+                        queryClient.invalidateQueries({
+                            queryKey: ["forecast"],
+                        })
+                    }
+                >
+                    Invalidate forecast
+                </button>
+
+                <button
+                    onClick={() => queryClient.invalidateQueries("forecast")}
+                >
+                    Invalidate chart
+                </button>
                 <motion.div
                     className="global-chart-fullscreen-backdrop-filter"
                     initial={{

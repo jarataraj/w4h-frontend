@@ -7,18 +7,8 @@ import {
     BsCaretLeftFill,
     BsCaretRight,
     BsCaretRightFill,
-    BsCaretDown,
-    BsChevronDown,
 } from "react-icons/bs";
-import {
-    IoExpand,
-    IoChevronDown,
-    IoContract,
-    IoSettingsOutline,
-    IoClose,
-    IoExpandSharp,
-    IoCaretDownCircleOutline,
-} from "react-icons/io5";
+import { IoExpand, IoContract, IoSettingsOutline } from "react-icons/io5";
 import ButtonSwitch from "components/ButtonSwitch";
 import { useState } from "react";
 
@@ -28,11 +18,12 @@ const GlobalChartControls = ({
     toggleShowKey,
     fullscreen,
     toggleFullscreen,
-    previousChart,
-    nextChart,
-    dateString,
+    isPreviousChart,
+    isNextChart,
+    visibleDatetime,
     changeDay,
     isFullscreenControls,
+    highLow,
     setHighLow,
 }) => {
     const [showDataSelectors, setShowDataSelectors] = useState(false);
@@ -86,7 +77,7 @@ const GlobalChartControls = ({
                     >
                         <button
                             className="change-day change-day--previous"
-                            disabled={previousChart.data ? false : true}
+                            disabled={!isPreviousChart}
                             onClick={() => changeDay(-1)}
                         >
                             <BsCaretLeft className="change-day_icon" />
@@ -94,21 +85,32 @@ const GlobalChartControls = ({
                         </button>
                         {useCompactTitle ? (
                             <h4 className="global-chart-title">
-                                {dateString.match(/\d+\/\d+/)[0]}
-                                &ensp;UTCI&ensp;Highs
+                                {visibleDatetime.toLocaleString({
+                                    month: "numeric",
+                                    day: "numeric",
+                                })}
+                                &ensp;UTCI&ensp;{highLow}
                             </h4>
                         ) : (
                             <div className="global-chart-title">
-                                <h4>UTCI&ensp;Highs</h4>
+                                <h4>UTCI&ensp;{highLow}</h4>
                                 <div className="global-chart-title-divider">
                                     |
                                 </div>
-                                <h4>{dateString.replace(",", "")}</h4>
+                                <h4>
+                                    {visibleDatetime
+                                        .toLocaleString({
+                                            weekday: "short",
+                                            month: "numeric",
+                                            day: "numeric",
+                                        })
+                                        .replace(",", "")}
+                                </h4>
                             </div>
                         )}
                         <button
                             className="change-day change-day--next"
-                            disabled={nextChart.data ? false : true}
+                            disabled={!isNextChart}
                             onClick={() => changeDay(1)}
                         >
                             <BsCaretRight className="change-day_icon" />

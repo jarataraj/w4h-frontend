@@ -15,14 +15,18 @@ const Modal = ({ children, openCondition, exit, animate }) => {
                     key={"modal-background"}
                     initial={{
                         backdropFilter: "blur(0px) brightness(1)",
+                        "webkit-backdrop-filter": "blur(0px) brightness(1)",
                     }}
                     animate={
                         animate || {
                             backdropFilter: "blur(4px) brightness(.3)",
+                            "webkit-backdrop-filter":
+                                "blur(4px) brightness(.3)",
                         }
                     }
                     exit={{
                         backdropFilter: "blur(0px) brightness(1)",
+                        "webkit-backdrop-filter": "blur(0px) brightness(1)",
                     }}
                     transition={transition}
                     onClick={exit}

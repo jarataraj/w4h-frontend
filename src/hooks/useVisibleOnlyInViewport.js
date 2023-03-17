@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-// Hides elements via opacity that are not fully contained by viewport. Consider changing to useHideIfOverflowsAncestor
+// Hides elements via opacity that are not fully contained by viewport.
+// Consider changing to useHideIfOverflowsAncestor
 const useVisibleOnlyInViewport = (
     viewport,
     descendantsSelector,
     dependencies
 ) => {
-    const deps = dependencies || true;
     useEffect(() => {
         if (viewport.current) {
             const toggleVisibility = (entries, observer) => {
@@ -33,7 +33,7 @@ const useVisibleOnlyInViewport = (
                 observer.observe(target);
             }
         }
-    }, [viewport, descendantsSelector, deps]);
+    }, [viewport, descendantsSelector, dependencies]);
 };
 
 export default useVisibleOnlyInViewport;

@@ -1,19 +1,18 @@
-// TODO: ensure sort on backend rather than front, add WBGT to data pipeline and remove temp
+import { DateTime } from "luxon";
+
+// TODO: ensure sort on backend rather than front
 const decodeRawForecastData = (data) => {
-    const start = new Date(data.forecastStart);
-    const oneHour = 1000 * 60 * 60;
+    const start = DateTime.fromISO(data.forecastStart);
+    // returns [{time: naive, UTCI, WBGT}]
     return data.tempTimesEncoded
         .map((tempTime) => {
             return {
-                time: new Date(start.getTime() + (tempTime % 120) * oneHour),
-                UTCI: (Math.floor(tempTime / 120) % 2000) / 10 - 100,
-                WBGT: Math.floor(Math.floor(tempTime / 120) / 2000) / 10 - 100,
+                time: start.plus({ hours: tempTime % 200 }),
+                UTCI: (Math.floor(tempTime / 200) % 2000) / 10 - 100,
+                WBGT: Math.floor(Math.floor(tempTime / 200) / 2000) / 10 - 100,
             };
         })
-        .sort(
-            (tempTimeA, tempTimeB) =>
-                tempTimeA.time.getTime() - tempTimeB.time.getTime()
-        );
+        .sort((tempTimeA, tempTimeB) => tempTimeA.time - tempTimeB.time);
 };
 
 export default decodeRawForecastData;

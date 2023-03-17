@@ -14,7 +14,7 @@ const Xgrid = ({
                 {/* ------ Midnights ------ */}
                 {Array.from(timeData.values())
                     .slice(1, -1)
-                    .filter(({ time }) => time.getHours() === 0)
+                    .filter(({ time }) => time.hour === 0)
                     .map(({ time, position }) => {
                         return (
                             <div
@@ -68,13 +68,7 @@ const Xgrid = ({
                     {Array.from(timeData.values())
                         .slice(1, -1)
                         .filter(({ time }) => {
-                            let hour = time.getHours();
-                            return (
-                                hour === 0 ||
-                                hour === 6 ||
-                                hour === 12 ||
-                                hour === 18
-                            );
+                            return [0, 6, 12, 18].includes(time.hour);
                         })
                         .map(({ time, temp, position }) => {
                             return (

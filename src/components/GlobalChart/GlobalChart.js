@@ -1,20 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { DateTime } from "luxon";
 import "./globalchart.css";
-import {
-    BsCaretLeft,
-    BsCaretLeftFill,
-    BsCaretRight,
-    BsCaretRightFill,
-} from "react-icons/bs";
-import {
-    IoExpand,
-    IoContract,
-    IoClose,
-    IoExpandSharp,
-    IoCaretDownCircleOutline,
-} from "react-icons/io5";
-
-import TextRadio from "./TextRadio";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -24,8 +10,6 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
-import DesktopKey from "./VerticalKey";
-
 import GlobalChartControls from "./GlobalChartControls";
 import useChart from "services/charts";
 import useLocale from "hooks/useLocale";
@@ -34,118 +18,67 @@ import HorizontalKey from "./HorizontalKey";
 import VerticalKey from "./VerticalKey";
 import CompactKey from "./CompactKey";
 import { useMediaQuery } from "@mui/material";
+import useStatus from "services/status";
 
 const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
-    const locale = useLocale();
+    const [visibleDateOffset, setVisibleDateOffset] = useState(0);
     const [showKey, toggleShowKey] = useBinaryState([false, true]);
-    // ====== Testing ======
-    const [day, setDay] = useState(
-        new Date(new Date(Date.now()).setFullYear(2022, 10, 17))
-    );
+    const [highLow, setHighLow] = useState("Highs");
+    const status = useStatus();
 
-    let today = useRef(new Date());
-    today.current.setUTCHours(0);
-    today.current.setUTCMinutes(0);
-    today.current.setUTCMilliseconds(0);
+    // ====== Dates ======
+    const now = DateTime.now();
 
-    const testingOffset =
-        today.current.valueOf() - Date.parse("November 17 2022 00:00:00 GMT");
-    console.log(testingOffset);
+    // Adjust date label if timezone offset is outside of -11 to +12 hours
+    let dateLabelOffset = 0;
+    if (now.offset < -11 * 60) {
+        dateLabelOffset = 1;
+    } else if (now.offset > 12 * 60) {
+        dateLabelOffset = -1;
+    }
+    const dateLabelAdjustedNow = now.plus({ days: dateLabelOffset });
 
-    const dateString = new Intl.DateTimeFormat(locale, {
-        weekday: "short",
-        month: "numeric",
-        day: "numeric",
-    }).format(day);
+    const visibleDatetime = dateLabelAdjustedNow.plus({
+        days: visibleDateOffset,
+    });
+    const visibleDate = visibleDatetime.toISODate();
+    const previousDate = dateLabelAdjustedNow
+        .plus({ days: visibleDateOffset - 1 })
+        .toISODate();
+    const nextDate = dateLabelAdjustedNow
+        .plus({ days: visibleDateOffset + 1 })
+        .toISODate();
 
     const changeDay = (deltaDays) => {
-        let newDay = new Date(day);
-        newDay.setDate(newDay.getDate() + deltaDays);
-        setDay(newDay);
+        setVisibleDateOffset(visibleDateOffset + deltaDays);
     };
 
-    const datestring = (offset = 0) => {
-        let date = new Date(day.valueOf());
-        date.setDate(date.getDate() + offset);
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    };
-
-    // const [day, setDay] = useState(new Date(Date.now()));
-    // NEW
-    // const [fullscreen, toggleFullscreen] = useBinaryState();
-    // OLD
-    // const [fullscreen, setFullscreen] = useState({ state: "closed" });
-    const [thermalIndex, setThermalIndex] = useState("UTCI");
-    const [highLow, setHighLow] = useState("Highs");
-
-    // const isFullscreen = fullscreen.state !== "closed";
-    const highLowString = highLow.toLowerCase();
-    const visibleChart = useChart(datestring(), highLowString, true);
-    const nextChart = useChart(
-        datestring(1),
-        highLowString,
-        visibleChart.isFetched
-    );
-    const previousChart = useChart(
-        datestring(-1),
-        highLowString,
-        visibleChart.isFetched
+    const visibleChart = useChart(
+        visibleDate,
+        highLow,
+        status.data?.globalCharts[visibleDate],
+        Boolean(status.data)
     );
 
-    const globalImg = useRef();
+    // Preload previous and next chart once visible chart is fetched
+    const isPreviousChart =
+        status.data && previousDate in status.data.globalCharts;
+    useChart(
+        previousDate,
+        highLow,
+        status.data?.globalCharts[previousDate],
+        // Not sure why I need Boolean() here but otherwise the chart is active
+        Boolean(isPreviousChart && visibleChart.isFetched)
+    );
+    const isNextChart = status.data && nextDate in status.data.globalCharts;
+    useChart(
+        nextDate,
+        highLow,
+        status.data?.globalCharts[nextDate],
+        Boolean(isNextChart && visibleChart.isFetched)
+    );
+
     const modalImg = useRef();
-    const transitionImg = useRef();
-
-    const fullscreenTransition = {
-        duration: 2.5,
-        type: "spring",
-        bounce: 0,
-    };
-
-    // const getModalPositions = () => {
-    //     let originalPos = globalImg.current.getBoundingClientRect();
-    //     let viewportWidth = window.document.documentElement.clientWidth;
-    //     let viewportHeight = window.document.documentElement.clientHeight;
-    //     let screenAspect = viewportWidth / viewportHeight;
-    //     let imgAspect = originalPos.width / originalPos.height;
-    //     let original = {
-    //         top: `${originalPos.y}px`,
-    //         left: `${originalPos.x}px`,
-    //         width: `${originalPos.width}px`,
-    //     };
-    //     let width;
-    //     if (screenAspect > imgAspect) {
-    //         width = viewportHeight * screenAspect;
-    //     } else {
-    //         width = viewportWidth;
-    //     }
-    //     if (viewportWidth > 1200) width -= 40;
-    //     let height = width / imgAspect;
-    //     let modal = {
-    //         top: `${viewportHeight / 2 - height / 2}px`,
-    //         left: `${viewportWidth / 2 - width / 2}px`,
-    //         width: `${width}px`,
-    //     };
-    //     return { original, modal };
-    // };
-
-    // const openFullscreen = () => {
-    //     disableBodyScroll(transitionImg, {
-    //         reserveScrollBarGap: true,
-    //     });
-    //     let { original, modal } = getModalPositions();
-    //     setFullscreen({ from: original, to: modal, state: "opening" });
-    // };
-
-    // const closeFullscreen = () => {
-    //     let { original, modal } = getModalPositions();
-    //     setFullscreen({ from: modal, to: original, state: "closing" });
-    // };
-
-    // Clear any scroll locks on unmount
-    // useEffect(() => {
-    //     return () => clearAllBodyScrollLocks();
-    // }, []);
 
     const useVerticalKey = useMediaQuery(
         "@media screen and (min-width: 1144px)"
@@ -195,11 +128,12 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
                         toggleShowKey={toggleShowKey}
                         fullscreen={fullscreen}
                         toggleFullscreen={toggleFullscreen}
-                        previousChart={previousChart}
-                        nextChart={nextChart}
-                        dateString={dateString}
+                        isPreviousChart={isPreviousChart}
+                        isNextChart={isNextChart}
+                        visibleDatetime={visibleDatetime}
                         changeDay={changeDay}
                         isFullscreenControls={false}
+                        highLow={highLow}
                         setHighLow={setHighLow}
                     />
                     <HorizontalKey showKey={showKey && useHorizontalKey} />
@@ -230,9 +164,6 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
                             // src="https://www.weatherforhumans.com/charts/2022-11-17_UTCI_lows_highres.png"
                             src={visibleChart.data}
                             onClick={(e) => {
-                                console.log(
-                                    modalImg.current.getBoundingClientRect()
-                                );
                                 e.stopPropagation();
                             }}
                             onDoubleClick={toggleFullscreen}
@@ -262,9 +193,9 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
                                 className="global-chart-controls--fullscreen"
                                 toggleFullscreen={toggleFullscreen}
                                 fullscreen={fullscreen}
-                                previousChart={previousChart}
-                                nextChart={nextChart}
-                                dateString={dateString}
+                                isPreviousChart={isPreviousChart}
+                                isNextChart={isNextChart}
+                                visibleDatetime={visibleDatetime}
                                 changeDay={changeDay}
                                 isFullscreenControls={true}
                             />

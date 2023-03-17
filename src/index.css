@@ -898,7 +898,7 @@ input[type="search"]::-webkit-search-results-decoration {
     border-left: 1px dotted #000;
 }
 .x-gridline--midnight {
-    border-left: 1px solid #222;
+    border-left: 1px solid #333;
 }
 
 /* ...... Bottom Middle ...... */
