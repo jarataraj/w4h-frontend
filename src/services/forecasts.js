@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import decodeForecastData from "utils/decodeForecastData";
 import decodeRawForecastData from "utils/decodeRawForecastData";
 
 const forecasts = axios.create({

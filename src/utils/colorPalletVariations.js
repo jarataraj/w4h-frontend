@@ -70,7 +70,7 @@ const e = [
     "#ffad8a",
     "#ff9282",
 ];
-// made from tuning changing lightness and saturation of b
+// made from tuning lightness and saturation of b
 const f = [
     "#849ff1",
     "#8bacf2",

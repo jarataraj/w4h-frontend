@@ -5,6 +5,8 @@ const useHideIfOverflowing = (ref, dependencies) => {
     useLayoutEffect(() => {
         let element = ref.current;
         if (element) {
+            // need to make visible in order to use .scrollWidth and .clientWidth
+            element.style.visibility = "visible";
             if (element.scrollWidth > element.clientWidth) {
                 element.style.visibility = "hidden";
             }

@@ -34,12 +34,11 @@ import ForecastFooter from "./ForecastFooter";
 
 // Custom Hooks
 import useOverlayScrollbarsViewport from "hooks/useOverlayScrollbarsViewport";
-import useOverlayScrollbarsHorizontalScroll from "hooks/useOverlayScrollbarsHorizontalScroll";
+// import useOverlayScrollbarsHorizontalScroll from "hooks/useOverlayScrollbarsHorizontalScroll";
 // import useHorizontalScroll from "hooks/useHorizontalScroll";
 import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
 import useForecastData from "./useForecastData";
 import useBinaryState from "hooks/useBinaryState";
-import usePrevious from "hooks/usePrevious";
 
 const Forecast = ({
     forecasts,
@@ -52,7 +51,6 @@ const Forecast = ({
     data,
 }) => {
     // ====== State  ======
-    const previousLocation = usePrevious(location.name);
     const appIsNewlyMounted = useContext(AppNewlyMountedContext);
     const scrollContainer = useRef(null);
     const [showKey, toggleShowKey] = useBinaryState([false, true]);
@@ -244,7 +242,10 @@ const Forecast = ({
     const chartMiddleViewport = useOverlayScrollbarsViewport(scrollContainer);
     // useHorizontalScroll(chartMiddleViewport);
     // ^ Janky in Chrome, better animation than useOverlayScrollbarsHorizontalScroll in Firefox
-    useOverlayScrollbarsHorizontalScroll(scrollContainer);
+
+    // Decided that mouse-wheel horizontal scroll too-often conflicts with
+    // other user intentions after personal experience
+    // useOverlayScrollbarsHorizontalScroll(scrollContainer);
     useVisibleOnlyInViewport(chartMiddleViewport, ".day-label", location.name);
     const { scrollIntoView, targetRef } = useScrollIntoView({
         duration: 800,
@@ -256,18 +257,8 @@ const Forecast = ({
         }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // When forecast location changes, change width of chart middle viewport according to new data
-    console.log("Previous: ", previousLocation, "; Current: ", location.name);
-    console.log(previousLocation && previousLocation !== location.name);
-    // if (previousLocation && previousLocation !== location.name) {
-    //     if (forecastTimescale === "daily") {
-    //         console.log("setting to daily width");
-    //         setAnimatedWidth(dailyXwidth);
-    //     } else {
-    //         console.log("setting to hourly width");
-    //         setAnimatedWidth(hourlyXwidth);
-    //     }
-    // }
+    // When data width changes due to forecast location change, need to
+    // change animatedDataWidth to match
     useLayoutEffect(() => {
         if (forecastTimescale === "daily") {
             console.log("setting to daily width");

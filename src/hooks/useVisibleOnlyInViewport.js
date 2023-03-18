@@ -32,6 +32,7 @@ const useVisibleOnlyInViewport = (
             for (let target of targets) {
                 observer.observe(target);
             }
+            return () => observer.disconnect();
         }
     }, [viewport, descendantsSelector, dependencies]);
 };

@@ -15,8 +15,8 @@ const Days = ({
     // ENHANCEMENT: create dependency on hourly vs daily
     const firstDay = useRef(null);
     const lastDay = useRef(null);
-    useHideIfOverflowing(firstDay, location);
-    useHideIfOverflowing(lastDay, location);
+    useHideIfOverflowing(firstDay, [location, forecastTimescale]);
+    useHideIfOverflowing(lastDay, [location, forecastTimescale]);
 
     return (
         <div

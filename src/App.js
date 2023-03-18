@@ -15,6 +15,7 @@ import {
     clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 
+import { MdClear } from "react-icons/md";
 import ColorBar from "./components/ColorBar";
 import Header from "./components/Header";
 import GlobalChart from "./components/GlobalChart";
@@ -79,24 +80,42 @@ function App() {
         setCoverageModal(false);
     };
 
+    // Warning
+    const [showWarning, toggleShowWarning] = useBinaryState([true, false]);
+
     return (
         <>
             <AppNewlyMountedContext.Provider value={appIsNewlyMounted}>
-                <button
-                    onClick={() =>
-                        queryClient.invalidateQueries({
-                            queryKey: ["forecast"],
-                        })
-                    }
-                >
-                    Invalidate forecast
-                </button>
-
-                <button
-                    onClick={() => queryClient.invalidateQueries("forecast")}
-                >
-                    Invalidate chart
-                </button>
+                <AnimatePresence>
+                    {showWarning && (
+                        <motion.div
+                            className="warning-drawer"
+                            initial={{ height: "auto" }}
+                            exit={{ height: 0 }}
+                            transition={{
+                                type: "tween",
+                                ease: "easeInOut",
+                                duration: 0.4,
+                            }}
+                        >
+                            <div className="warning-container">
+                                <div className="warning">
+                                    weatherforhumans.com is a work in progress.
+                                    UCTI forecasts are reliable, but WBGT is not
+                                    yet forecasted using the best available
+                                    method (Liljegren et al. 2008).
+                                </div>
+                                <button
+                                    className="close-warning"
+                                    onClick={toggleShowWarning}
+                                >
+                                    dismiss
+                                    {/* <MdClear /> */}
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 <motion.div
                     className="global-chart-fullscreen-backdrop-filter"
                     initial={{
