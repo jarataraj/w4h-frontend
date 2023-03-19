@@ -19,6 +19,8 @@ import VerticalKey from "./VerticalKey";
 import CompactKey from "./CompactKey";
 import { useMediaQuery } from "@mui/material";
 import useStatus from "services/status";
+import SpinLoader from "components/SpinLoader";
+import { BiError } from "react-icons/bi";
 
 const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
     const [visibleDateOffset, setVisibleDateOffset] = useState(0);
@@ -96,16 +98,25 @@ const GlobalChart = ({ fullscreen, toggleFullscreen }) => {
                 </div>
                 <div className="global-chart-container">
                     <div className="global-chart-image-container">
-                        {false && (
-                            <h4 className="global-chart-load-status">
-                                {visibleChart.isError
-                                    ? "Error Loading Global Chart"
-                                    : "Loading Global Chart"}
-                            </h4>
+                        {visibleChart.isLoading && (
+                            <div className="global-chart-loading-container">
+                                <SpinLoader className="global-chart-spin-loader" />
+                                <h2 className="global-chart-loading-message">
+                                    Loading global chart...
+                                </h2>
+                            </div>
+                        )}
+                        {visibleChart.isError && (
+                            <div className="global-chart-loading-container">
+                                <BiError className="global-chart-loading-error" />
+                                <h2 className="global-chart-loading-message">
+                                    Error loading global chart
+                                </h2>
+                            </div>
                         )}
                         {/* Better animation performance by only showing one motion.img with the same 
                     layoutId in order to prevent framer motion's automatic crossfade effect  */}
-                        {!fullscreen && (
+                        {visibleChart.isSuccess && !fullscreen && (
                             <motion.img
                                 // key="two"
                                 // layout
