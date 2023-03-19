@@ -115,9 +115,11 @@ a {
     padding: 0;
     float: left;
     color: black;
+    text-decoration: underline;
+    text-decoration-color: #777;
 }
 .close-warning:hover {
-    text-decoration: underline;
+    text-decoration-color: black;
 }
 .close-warning > svg {
     font-size: 18px;
@@ -436,6 +438,7 @@ header {
     border: 1px solid #555;
     box-shadow: 0px 1px 4px #ddd;
     box-sizing: content-box;
+    background-color: #fff;
 }
 /* Outline w/ radius doesn't work on Safari, using border instead */
 .search-input:focus {
@@ -1207,6 +1210,11 @@ input[type="search"]::-webkit-search-results-decoration {
     /* border-radius: 20px; */
     margin: 1em 0;
     /* box-shadow: 0px 1px 4px #bbb; */
+}
+@media screen and (max-width: 600px) {
+    .about-section {
+        padding-right: 1rem;
+    }
 }
 .about-section-header {
     /* margin-top: 3.5rem; */
