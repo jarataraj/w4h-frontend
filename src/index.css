@@ -907,8 +907,8 @@ input[type="search"]::-webkit-search-results-decoration {
 /* ...... Top Middle ...... */
 
 .day-label {
-    margin: 0;
-    padding: 0 8px;
+    margin: 0 8px;
+    padding: 0;
     white-space: nowrap;
     overflow: hidden;
     transition: opacity 0.15s linear;
