@@ -36,6 +36,8 @@ import { DateTime } from "luxon";
 export const AppNewlyMountedContext = createContext();
 
 function App() {
+    console.log(DateTime.now().toLocaleString({ hour: "numeric" }));
+
     const queryClient = useQueryClient();
     // ====== State ======
     const status = useStatus();

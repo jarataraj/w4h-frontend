@@ -75,11 +75,13 @@ const Xticks = ({
                                     >
                                         <div className="x-label x-label--time">
                                             {/* {((time.hour + 11) % 12) + 1} */}
-                                            {time
-                                                .toLocaleString({
-                                                    hour: "numeric",
-                                                })
-                                                .match(/^(\d{1,2})/)}
+                                            {
+                                                time
+                                                    .toLocaleString({
+                                                        hour: "numeric",
+                                                    })
+                                                    .match(/^(\d{1,2})/)[0]
+                                            }
                                         </div>
                                         <div className="x-label x-label--temp">
                                             {Math.round(temp)}
@@ -126,7 +128,7 @@ const Xticks = ({
                                                 hour: "numeric",
                                             })
                                             .match(
-                                                /^(\d+)[^[:alpha:]]*([[:alpha:]])?/
+                                                /^(\d+)[^a-zA-Z]*([a-zA-Z])?/
                                             )
                                             .slice(1)
                                             .join("")

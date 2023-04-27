@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import useLocale from "hooks/useLocale";
 import { range } from "d3-array";
 import { floor, ceiling, isMultipleOf } from "utils/mathUtils";
-import { DateTime } from "luxon";
 import {
     colorScales,
     thermalStressCategories,
