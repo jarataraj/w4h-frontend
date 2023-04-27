@@ -261,10 +261,8 @@ const Forecast = ({
     // change animatedDataWidth to match
     useLayoutEffect(() => {
         if (forecastTimescale === "daily") {
-            console.log("setting to daily width");
             setAnimatedWidth(dailyXwidth);
         } else {
-            console.log("setting to hourly width");
             setAnimatedWidth(hourlyXwidth);
         }
     }, [dailyXwidth, hourlyXwidth]); // eslint-disable-line react-hooks/exhaustive-deps

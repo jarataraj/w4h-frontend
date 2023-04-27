@@ -3,6 +3,7 @@ import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import useAncestorVisibleOnlyInViewport from "hooks/useAncestorVisibleOnlyInViewport";
 import useVisibleOnlyInViewport from "hooks/useVisibleOnlyInViewport";
 import useRemoveIfOverflowsAncestor from "hooks/useRemoveIfOverflowsAncestor";
+import { DateTime } from "luxon";
 
 const Xticks = ({
     location,
@@ -73,7 +74,12 @@ const Xticks = ({
                                         }`}
                                     >
                                         <div className="x-label x-label--time">
-                                            {((time.hour + 11) % 12) + 1}
+                                            {/* {((time.hour + 11) % 12) + 1} */}
+                                            {time
+                                                .toLocaleString({
+                                                    hour: "numeric",
+                                                })
+                                                .match(/^(\d{1,2})/)}
                                         </div>
                                         <div className="x-label x-label--temp">
                                             {Math.round(temp)}
@@ -115,10 +121,16 @@ const Xticks = ({
                                                 : undefined
                                         }
                                     >
-                                        {/* TODO: fix formatting to locale time (24 vs 12 hr clock) */}
-                                        {`${((time.hour + 11) % 12) + 1}${
-                                            time.hour < 12 ? "a" : "p"
-                                        }`}
+                                        {time
+                                            .toLocaleString({
+                                                hour: "numeric",
+                                            })
+                                            .match(
+                                                /^(\d+)[^[:alpha:]]*([[:alpha:]])?/
+                                            )
+                                            .slice(1)
+                                            .join("")
+                                            .toLowerCase()}
                                     </div>
                                 </div>
                             );

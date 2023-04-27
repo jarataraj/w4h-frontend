@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useLocalStorage } from "hooks/useLocalStorage";
+import useLocalStorage from "hooks/useLocalStorage";
 import { useQueryClient } from "@tanstack/react-query";
 import decodeRawForecastData from "utils/decodeRawForecastData";
 import SearchInput from "./SearchInput";

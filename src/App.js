@@ -5,8 +5,9 @@ import {
     useContext,
     createContext,
 } from "react";
-import { useLocalStorage } from "./hooks/useLocalStorage";
+import useLocalStorage from "hooks/useLocalStorage";
 import useBinaryState from "hooks/useBinaryState";
+import useLocalTempUnits from "hooks/useLocalTempUnits";
 // import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -43,7 +44,7 @@ function App() {
         useBinaryState();
     // ------ Forecasts ------
     const [thermalIndex, toggleThermalIndex] = useBinaryState(["UTCI", "WBGT"]);
-    const [units, toggleUnits] = useBinaryState(["C", "F"]);
+    const [units, toggleUnits] = useLocalTempUnits();
     const [forecasts, setForecasts] = useLocalStorage("forecasts", []);
     // Remove old unpinned forecast on app mount
     const isNewlyMounted = useRef(true);
